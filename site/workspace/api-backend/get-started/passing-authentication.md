@@ -1,0 +1,102 @@
+﻿---
+sidebar_position: 2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Passing authentication
+
+The user needs to perform several easy steps to pass authentication:
+
+1. Send POST request, containing the **userName** and **password** parameters to the [api/2.0/authentication](../../../workspace/api-backend/usage-api/authenticate-a-user.api.mdx) address:
+
+   <Tabs>
+      <TabItem value="request" label="Request">
+        ``` http
+        POST /api/2.0/authentication.json HTTP/1.1
+        Host: yourportal.maticonoffice.ru
+        Content-Type: application/json
+        Accept: application/json
+
+        {
+            "userName": "yourusername",
+            "password": "yourpassword"
+        }
+        ```
+
+        :::note
+        You have to enter your own portal address to the *Host: yourportal.maticonoffice.ru* line instead of *yourportal.maticonoffice.ru* address.
+        :::
+      </TabItem>
+      <TabItem value="response" label="Response">
+        ``` http
+        HTTP/1.1 201 Created
+        Cache-Control: private
+        Content-Type: application/json; charset=utf-8
+        {
+            "count": 1,
+            "response": {
+                "expires": "2010-07-07T17:06:03.5845502+03:00",
+                "token": "sdjhfskjdhkqy739459234"
+            },
+            "status": 0,
+            "statusCode": 201
+        }
+        ```
+      </TabItem>
+    </Tabs>
+
+2. In case authentication is successful, a token which will look like **sdjhfskjdhkqy739459234** will be received.
+
+3. Use this token every time you call API methods inserting it to the **Authorization** HTTP header:
+
+   Sample API Request:
+
+   ``` http
+   GET /api/2.0/people/@self.json HTTP/1.1
+   Host: yourportal.maticonoffice.ru
+   Accept: application/json
+   Authorization: sdjhfskjdhkqy739459234
+   ```
+
+   :::note
+   You have to enter your own portal address to the *Host: yourportal.maticonoffice.ru* line instead of *yourportal.maticonoffice.ru* address.
+   :::
+
+## Authentication request examples
+
+<Tabs>
+  <TabItem value="csharp" label="C#">
+    ``` cs
+    var request = System.Net.WebRequest.Create("https://yourportal.maticonoffice.ru/api/2.0/authentication.json");
+    request.Method = "POST";
+    request.ContentType = "application/json";
+
+    var body = "{\"userName\":\"yourusername\",\"password\":\"yourpassword\"}";
+    var data = System.Text.Encoding.UTF8.GetBytes(body);
+
+    request.ContentLength = data.Length;
+    using (var stream = request.GetRequestStream())
+    {
+        stream.Write(data, 0, data.Length);
+    }
+
+    var response = (System.Net.HttpWebResponse)request.GetResponse();
+    var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+    ```
+
+    :::note
+    You have to enter your own portal address instead of *yourportal.maticonoffice.ru* address.
+    :::
+  </TabItem>
+  <TabItem value="curl" label="cURL">
+    ``` sh
+    curl --request POST --header "Content-Type: application/json" --data "{\"username\":\"yourusername\",\"password\":\"yourpassword\"}" "https://yourportal.maticonoffice.ru/api/2.0/authentication.json"
+    ```
+
+    :::note
+    You have to enter your own portal address instead of *yourportal.maticonoffice.ru* address.
+    :::
+  </TabItem>
+</Tabs>

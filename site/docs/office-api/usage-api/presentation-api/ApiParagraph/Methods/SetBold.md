@@ -1,0 +1,45 @@
+# SetBold
+
+Sets the bold property to the text character.
+
+## Syntax
+
+```javascript
+expression.SetBold(isBold);
+```
+
+`expression` - A variable that represents a [ApiParagraph](../ApiParagraph.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| isBold | Required | boolean |  | Specifies that the contents of this paragraph are displayed bold. |
+
+## Returns
+
+[ApiParagraph](../../ApiParagraph/ApiParagraph.md)
+
+## Example
+
+Make paragraph text bold in a presentation.
+
+```javascript editor-pptx
+// How do I apply bold formatting to a paragraph in a presentation?
+
+// Display text in bold weight in a presentation.
+
+const presentation = Api.GetPresentation();
+const slide = presentation.GetSlideByIndex(0);
+slide.RemoveAllObjects();
+
+const fill = Api.CreateSolidFill(Api.HexColor('#FF6F3D'));
+const stroke = Api.CreateStroke(0, Api.CreateNoFill());
+const shape = Api.CreateShape('roundRect', Api.MillimetersToEmus(300), Api.MillimetersToEmus(130), fill, stroke);
+shape.SetPosition(Api.MillimetersToEmus(20), Api.MillimetersToEmus(35));
+const docContent = shape.GetContent();
+const paragraph = docContent.GetElement(0);
+paragraph.AddText('This is a paragraph with the font set to bold.');
+paragraph.SetBold(true);
+slide.AddObject(shape);
+```

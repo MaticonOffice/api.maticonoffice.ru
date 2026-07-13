@@ -1,0 +1,56 @@
+# SetIndex
+
+Sets the placeholder index.
+
+## Syntax
+
+```javascript
+expression.SetIndex(nIdx);
+```
+
+`expression` - A variable that represents a [ApiPlaceholder](../ApiPlaceholder.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| nIdx | Required | number |  | The placeholder index. |
+
+## Returns
+
+boolean
+
+## Example
+
+Assign a position index to a placeholder in a presentation.
+
+```javascript editor-pptx
+// How do I change the index number of a placeholder in a presentation?
+
+// Set a placeholder's index and verify it was applied in a presentation.
+
+const presentation = Api.GetPresentation();
+const slide = presentation.GetSlideByIndex(0);
+slide.RemoveAllObjects();
+
+let rgb = Api.CreateRGBColor(50, 100, 150);
+let fill = Api.CreateSolidFill(rgb);
+let stroke = Api.CreateStroke(0, Api.CreateNoFill());
+let shape = Api.CreateShape('rect', 300 * 36000, 100 * 36000, fill, stroke);
+
+const placeholder = Api.CreatePlaceholder();
+shape.SetPlaceholder(placeholder);
+
+placeholder.SetIndex(42);
+slide.AddObject(shape);
+
+rgb = Api.CreateRGBColor(50, 100, 150);
+fill = Api.CreateSolidFill(rgb);
+stroke = Api.CreateStroke(0, Api.CreateNoFill());
+shape = Api.CreateShape('rect', 300 * 36000, 10 * 36000, fill, stroke);
+shape.SetPosition(0, 110 * 36000);
+slide.AddObject(shape);
+
+const paragraph = shape.GetContent().GetElement(0);
+paragraph.AddText('Placeholder index set to ' + placeholder.GetIndex());
+```

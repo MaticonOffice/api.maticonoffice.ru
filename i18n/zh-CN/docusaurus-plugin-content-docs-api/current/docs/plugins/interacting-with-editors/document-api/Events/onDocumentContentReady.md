@@ -1,0 +1,23 @@
+﻿# onDocumentContentReady
+
+当文档完全加载时调用的函数。
+
+## 参数
+
+此事件没有参数。
+
+## 示例
+
+```javascript
+window.Asc.plugin.attachEditorEvent("onDocumentContentReady", () => {
+    let oProperties = {
+        "searchString"  : "Maticon Office",
+        "replaceString" : "Maticon Office is cool",
+        "matchCase"     : false
+    };
+
+    window.Asc.plugin.executeMethod("SearchAndReplace", [oProperties], function() {
+            window.Asc.plugin.executeCommand("close", "");
+    });
+});
+```

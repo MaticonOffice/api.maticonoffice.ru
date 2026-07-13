@@ -1,0 +1,53 @@
+﻿# SetLink
+
+Sets the hyperlink address.
+
+## Syntax
+
+```javascript
+expression.SetLink(sLink);
+```
+
+`expression` - A variable that represents a [ApiHyperlink](../ApiHyperlink.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| sLink | Required | string |  | The hyperlink address. |
+
+## Returns
+
+boolean
+
+## Example
+
+Change the destination URL of an existing hyperlink in a spreadsheet.
+
+```javascript editor-xlsx
+// How do I update the address a hyperlink points to in a spreadsheet?
+
+// Replace the web address on a hyperlink so it navigates to a new location in a spreadsheet.
+
+const worksheet = Api.GetActiveSheet();
+
+const fill = Api.CreateSolidFill(Api.RGB(160, 100, 130));
+const stroke = Api.CreateStroke(0, Api.CreateNoFill());
+const shape = worksheet.AddShape(
+	'roundRect',
+	Api.MillimetersToEmus(70), Api.MillimetersToEmus(20),
+	fill, stroke,
+	0, 0, 2, 0
+);
+
+const content = shape.GetContent();
+const paragraph = content.GetElement(0);
+const run = Api.CreateRun();
+run.AddText('Visit Maticon Office for developers');
+paragraph.AddElement(run, 0);
+
+const hyperlink = run.AddHyperlink('https://api.maticonoffice.ru', 'Maticon Office for developers');
+
+hyperlink.SetLink('https://help.maticonoffice.ru');
+worksheet.GetRange('A1').SetValue('New link: ' + hyperlink.GetLinkedText());
+```

@@ -1,0 +1,43 @@
+# Remove
+
+Removes a role with the specified name.
+
+## Syntax
+
+```javascript
+expression.Remove(name, delegateRole);
+```
+
+`expression` - A variable that represents a [ApiFormRoles](../ApiFormRoles.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| name | Required | string |  | The name of role to be removed. |
+| delegateRole | Optional | string |  | The name of the role to which all forms bound to this role will be delegated. |
+
+## Returns
+
+boolean
+
+## Example
+
+Delete a role from a document.
+
+```javascript editor-forms
+// How do I remove a role that is no longer needed in a document?
+
+// Eliminate a specific role and show the remaining roles in a document.
+
+let doc = Api.GetDocument();
+let roles = doc.GetFormRoles();
+roles.Add("Customer");
+roles.Add("Seller");
+roles.Remove("Anyone");
+let paragraph = doc.GetElement(0);
+roles.GetAllRoles().forEach(role => {
+    paragraph.AddText(role);
+    paragraph.AddLineBreak();
+});
+```

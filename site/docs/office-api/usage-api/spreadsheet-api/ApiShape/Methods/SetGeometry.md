@@ -1,0 +1,49 @@
+# SetGeometry
+
+Sets a custom geometry for the current shape.
+
+## Syntax
+
+```javascript
+expression.SetGeometry(oGeometry);
+```
+
+`expression` - A variable that represents a [ApiShape](../ApiShape.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| oGeometry | Required | [ApiGeometry](../../ApiGeometry/ApiGeometry.md) |  | The geometry to set. |
+
+## Returns
+
+boolean
+
+## Example
+
+Draw a custom polygon outline on an existing shape by providing hand-crafted path data in a spreadsheet.
+
+```javascript editor-xlsx
+// How do I replace a shape's outline with a custom drawn path in a spreadsheet?
+
+// Override the default form of a shape with a manually defined geometric path in a spreadsheet.
+
+let worksheet = Api.GetActiveSheet();
+let customGeometry = Api.CreateCustomGeometry();
+let path = customGeometry.AddPath();
+path.SetWidth(100 * 36000);
+path.SetHeight(100 * 36000);
+path.SetStroke(true);
+path.SetFill("norm");
+path.MoveTo(50 * 36000, 0);
+path.LineTo(70 * 36000, 45 * 36000);
+path.LineTo(55 * 36000, 70 * 36000);
+path.LineTo(100 * 36000, 100 * 36000);
+path.LineTo(0, 100 * 36000);
+path.Close();
+let fill = Api.CreateSolidFill(Api.RGB(100, 150, 200));
+let stroke = Api.CreateStroke(18000, Api.CreateSolidFill(Api.RGB(50, 75, 100)));
+let shape = worksheet.AddShape("rect", 60 * 36000, 60 * 36000, fill, stroke, 3, 0, 2, 2);
+shape.SetGeometry(customGeometry);
+```

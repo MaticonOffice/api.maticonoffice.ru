@@ -1,0 +1,52 @@
+# SetColor
+
+Sets the text color for the current text run.
+
+## Syntax
+
+```javascript
+expression.SetColor(color);
+```
+
+`expression` - A variable that represents a [ApiRun](../ApiRun.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| color | Required | [ApiColor](../../ApiColor/ApiColor.md) |  | The text color. |
+
+## Returns
+
+[ApiTextPr](../../ApiTextPr/ApiTextPr.md)
+
+## Example
+
+Set the text color in a presentation.
+
+```javascript editor-pptx
+// What colors can be applied to text in a presentation?
+
+// Change the font color of text runs in a presentation.
+
+const presentation = Api.GetPresentation();
+const slide = presentation.GetSlideByIndex(0);
+slide.RemoveAllObjects();
+
+const fill = Api.CreateSolidFill(Api.HexColor('#5B9BD5'));
+const stroke = Api.CreateStroke(0, Api.CreateNoFill());
+const shape = Api.CreateShape(
+	'rect',
+	Api.MillimetersToEmus(120), Api.MillimetersToEmus(40),
+	fill, stroke
+);
+shape.SetPosition(Api.MillimetersToEmus(10), Api.MillimetersToEmus(20));
+
+const content = shape.GetContent();
+const paragraph = content.GetElement(0);
+const run = Api.CreateRun();
+run.AddText('This is a text run with the font color set to light blue.');
+paragraph.AddElement(run);
+run.SetColor(Api.HexColor('#aad3ff'));
+slide.AddObject(shape);
+```

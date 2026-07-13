@@ -1,0 +1,16 @@
+.noHeaderFooter {
+  flex: 1;
+  display: flex;
+}
+
+.noHeaderFooter nav {
+  display: none;
+}
+
+.noHeaderFooter footer {
+  display: none;
+}
+
+.noHeaderFooter [class*="announcementBar"] {
+  display: none;
+}

@@ -1,0 +1,49 @@
+# GetAllShapes
+
+Returns an array with all the shape objects from the slide master.
+
+## Syntax
+
+```javascript
+expression.GetAllShapes();
+```
+
+`expression` - A variable that represents a [ApiMaster](../ApiMaster.md) class.
+
+## Parameters
+
+This method doesn't have any parameters.
+
+## Returns
+
+[ApiShape](../../ApiShape/ApiShape.md)[]
+
+## Example
+
+Retrieve all shapes from a slide master in a presentation.
+
+```javascript editor-pptx
+// How do I find all shapes on a slide master in a presentation?
+
+// List every shape object in a slide master in a presentation.
+
+const presentation = Api.GetPresentation();
+const master = presentation.GetMaster(0);
+const slide = presentation.GetSlideByIndex(0);
+slide.RemoveAllObjects();
+
+const fill = Api.CreateSolidFill(Api.RGB(255, 111, 61));
+const stroke = Api.CreateStroke(0, Api.CreateNoFill());
+const shape = Api.CreateShape("flowChartMagneticTape", 300 * 36000, 130 * 36000, fill, stroke);
+shape.SetPosition(608400, 1267200);
+shape.SetSize(300 * 36000, 130 * 36000);
+master.AddObject(shape);
+
+const allShapes = master.GetAllShapes();
+const classType = allShapes[0].GetClassType();
+const docContent = shape.GetDocContent();
+const paragraph = docContent.GetElement(0);
+paragraph.SetJc("left");
+paragraph.AddText("Class type = " + classType);
+shape.SetVerticalTextAlign("center");
+```

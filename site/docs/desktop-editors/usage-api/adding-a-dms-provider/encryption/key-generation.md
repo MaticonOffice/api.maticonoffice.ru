@@ -1,0 +1,126 @@
+﻿# Key generation
+
+```mdx-code-block
+import APITable from '@site/src/components/APITable/APITable';
+```
+
+To check if the desktop app supports encryption, call the following command:
+
+```ts
+typeof window.AscDesktopEditor.cloudCryptoCommand === "function";
+```
+
+The steps below explain the process of document encryption in Maticon Office.
+
+1. Log in to the cloud and pass the **Encryption** plugin ID:
+
+   ``` ts
+   window.AscDesktopEditor.execCommand("portal:login", JSON.stringify({
+     encryptionKeys: {
+       cryptoEngineId: "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}",
+     },
+   }));
+   ```
+
+2. To monitor the password from the login page, send the desktop editors the *portal:checkpwd* command through the [execCommand](../execcommand.md) method. Parameters are specified in the format of a string with the serialized *json* as follows:
+
+   ``` json
+   {
+     "domain": "domain name",
+     "emailInput": "user@email.addr",
+     "pwdInput": "pwd"
+   }
+   ```
+
+   ```mdx-code-block
+   <APITable>
+   ```
+    | Name       | Type   | Example                       | Description                                       |
+    | ---------- | ------ | ----------------------------- | ------------------------------------------------- |
+    | domain     | string | `"https://exampledomain.com"` | The cloud name and the cloud entry point. |
+    | emailInput | string | `"john@example.com"`          | The user email entered on the login page. |
+    | pwdInput   | string | `"123456"`                    | The password entered on the login page.   |
+
+   ```mdx-code-block
+   </APITable>
+   ```
+
+   ## Example
+
+   ``` ts
+   window.AscDesktopEditor.execCommand("portal:checkpwd", JSON.stringify({
+     domain: "https://exampledomain.com",
+     emailInput: "john@example.com",
+     pwdInput: "123456",
+   }));
+   ```
+
+   When the command is sent, the DMS provider transfers the information about the password from the login page to the desktop app. Maticon Office Desktop Editors remembers the password and uses it for the key encryption and decryption.
+
+3. Pass the encrypted private and public keys with the login from the DMS provider to the desktop application with the following parameters:
+
+   ``` json
+   {
+     "encryptionKeys": {
+       "cryptoEngineId": "guid",
+       "privateKeyEnc": "private key",
+       "publicKey": "public key"
+     }
+   }
+   ```
+
+   ```mdx-code-block
+   <APITable>
+   ```
+
+   | Name           |  Type   | Example                                    | Description                           |
+   |----------------|---------|--------------------------------------------|---------------------------------------|
+   | cryptoEngineId |  string | `"{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}"` | The **Encryption** plugin ID. |
+   | privateKeyEnc  | string  | `"xxx"`                                    | The encrypted private key.    |
+   | publicKey      |  string | `"yyy"`                                    | The public key.               |
+
+   ```mdx-code-block
+   </APITable>
+   ```
+
+   ## Example
+
+   ``` ts
+   window.AscDesktopEditor.execCommand("portal:login", JSON.stringify({
+     encryptionKeys: {
+       cryptoEngineId: "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}",
+       privateKeyEnc: "xxx",
+       publicKey: "yyy",
+     },
+   }));
+   ```
+
+   You can also do it in the editor initialization config:
+
+   ``` ts
+   const config = {
+     editorConfig: {
+       encryptionKeys: {
+         cryptoEngineId: "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}",
+         privateKeyEnc: "xxx",
+         publicKey: "yyy",
+       },
+     },
+   };
+
+   const docEditor = new DocsAPI.DocEditor("placeholder", config);
+   ```
+
+4. Send the generated keys to the cloud through the *cloudCryptoCommand* method with the *encryptionKeys* type:
+
+   ``` ts
+   window.AscDesktopEditor.cloudCryptoCommand(
+     "encryptionKeys",
+     {
+       cryptoEngineId: "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}",
+       privateKeyEnc: "xxx",
+       publicKey: "yyy",
+     },
+     callback,
+   );
+   ```

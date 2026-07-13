@@ -1,0 +1,37 @@
+# LineStyle
+
+Specifies the line style used to form the cell border.
+
+## Type
+
+Enumeration
+
+## Values
+
+- "None"
+- "Double"
+- "Hair"
+- "DashDotDot"
+- "DashDot"
+- "Dotted"
+- "Dashed"
+- "Thin"
+- "MediumDashDotDot"
+- "SlantDashDot"
+- "MediumDashDot"
+- "MediumDashed"
+- "Medium"
+- "Thick"
+
+## Example
+
+Set a bottom black dotted border for a cell.
+
+```javascript editor-xlsx
+// How to set a style of a border line.
+
+// Get a range and change its border line style to dotted.
+
+const color = Api.CreateColorFromRGB(0, 0, 0);
+worksheet.GetRange("E2").SetBorders("Bottom", "Dotted", color);
+```

@@ -1,0 +1,71 @@
+﻿---
+description: Integrate Maticon Office Docs into Liferay for document editing and collaboration.
+tags: ["Docs", "Integration", "Ready-to-use"]
+sidebar_custom_props:
+  icon: /assets/images/editor/connectors/liferay.svg
+---
+
+# Liferay integration
+
+```mdx-code-block
+import YoutubeVideo from '@site/src/components/YoutubeVideo/YoutubeVideo';
+
+<YoutubeVideo videoId="U20aA97JglI"/>
+```
+
+This [app](https://github.com/MaticonOffice/maticonoffice-liferay) enables users to edit office documents from [Liferay](https://www.liferay.com/) using Maticon Office Docs.
+
+## Features
+
+- Currently, the following document formats can be opened and edited with this app: DOCM, DOCX, DOTM, DOTX, PDF, POTM, POTX, PPSM, PPSX, PPTM, PPTX, XLSB, XLSM, XLSX, XLTM, XLTX.
+- The following formats are available for viewing only: CSV, DJVU, DOC, DOT, DPS, DPT, EPUB, ET, ETT, FB2, FODP, FODS, FODT, HTM, HTML, HWP, HWPX, KEY, MD, MHT, MHTML, NUMBERS, ODG, ODP, ODS, ODT, OTP, OTS, OTT, OXPS, PAGES, POT, PPS, PPT, RTF, STW, SXC, SXI, SXW, TXT, VSDM, VSDX, VSSM, VSSX, VSTM, VSTX, WPS, WPT, XLS, XLT, XML, XPS.
+- The app will create a new **Edit in Maticon Office** menu option within the **Documents and Media** section for Office documents. This allows multiple users to collaborate in real time and to save back those changes to Liferay.
+
+## Installing Maticon Office Docs
+
+You will need an instance of Maticon Office Docs (Document Server) that is resolvable and connectable both from Liferay and any end clients. If that is not the case, use the official [Maticon Office Docs documentation page](https://help.maticonoffice.ru/server/linux/document/linux-installation.aspx). Maticon Office Docs must also be able to POST to Liferay directly.
+
+The easiest way to start an instance of Maticon Office Docs is to use [Docker](https://github.com/MaticonOffice/Docker-DocumentServer).
+
+## Installing Maticon Office app for Liferay
+
+Either install it from [Liferay Marketplace](https://web.liferay.com/marketplace/-/mp/application/171169174) or if you are building the app yourself, simply put a compiled `.jar` file from `build/libs` folder to `/opt/liferay/deploy`. Liferay will install it automatically.
+
+## Configuring Maticon Office app for Liferay
+
+To configure the app, navigate to **Control Panel -> Configuration -> System Settings**. In the **Platform** section, click the **Connectors** category and select **Maticon Office**.
+
+Starting from version 7.2, JWT is enabled by default and the secret key is generated automatically to restrict access to Maticon Office Docs and for security reasons and data integrity. Specify your own **Secret key** on the Liferay **System Settings** page. In the Maticon Office Docs [config file](../../additional-api/signature/signature.md), specify the same secret key and enable the validation.
+
+## Compiling Maticon Office app for Liferay
+
+Run `gradle build`. The output `.jar` will be placed inside the `build/libs` directory.
+
+## How it works
+
+The Maticon Office integration follows the API documented [here](../basic-concepts.md).
+
+1. The user navigates to the **Documents and Media** section within Liferay and selects the **Edit in Maticon Office** action.
+
+2. Liferay prepares a JSON object for Maticon Office Docs with the following properties:
+
+   - **url** - the URL that Maticon Office Docs uses to download the document;
+   - **callbackUrl** - the URL that Maticon Office Docs informs about status of the document editing;
+   - **key** - the *fileVersionId* to instruct Maticon Office Docs whether to download the document again or not;
+   - **title** - the document title (name).
+
+3. The client browser makes a request to the JavaScript library from Maticon Office Docs and sends Maticon Office Docs the DocEditor configuration with the above properties.
+
+4. Then Maticon Office Docs downloads the document from Liferay and the user begins editing.
+
+5. Maticon Office Docs sends a POST request to *callbackUrl* to inform Liferay that a user is editing the document.
+
+6. Liferay locks the document, but still allows other users with write access to collaborate in real time with Maticon Office Docs by keeping the **Edit in Maticon Office** action available.
+
+7. When all users and client browsers are done with editing, they close the editing window.
+
+8. After [10 seconds](../how-it-works/saving-file.md#save-delay) of inactivity, Maticon Office Docs sends a POST to *callbackUrl* letting Liferay know that the clients have finished editing the document and closed it.
+
+9. Liferay downloads a new version of the document, replacing the old one.
+
+Download the Maticon Office app for Liferay [here](https://github.com/MaticonOffice/maticonoffice-liferay).

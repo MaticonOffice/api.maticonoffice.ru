@@ -1,0 +1,52 @@
+# SetTextPr
+
+Sets the text properties to the current run.
+
+## Syntax
+
+```javascript
+expression.SetTextPr(oTextPr);
+```
+
+`expression` - A variable that represents a [ApiRun](../ApiRun.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| oTextPr | Required | [ApiTextPr](../../ApiTextPr/ApiTextPr.md) |  | The text properties that will be set to the current run. |
+
+## Returns
+
+[ApiTextPr](../../ApiTextPr/ApiTextPr.md)
+
+## Example
+
+Apply multiple text properties to a run in a presentation.
+
+```javascript editor-pptx
+// Configure font size, weight, color, and other formatting options together.
+
+// Create a text run and set comprehensive text properties including font size and weight.
+
+const presentation = Api.GetPresentation();
+const slide = presentation.GetSlideByIndex(0);
+slide.RemoveAllObjects();
+
+const fill = Api.CreateSolidFill(Api.RGB(255, 111, 61));
+const stroke = Api.CreateStroke(0, Api.CreateNoFill());
+const shape = Api.CreateShape("flowChartMagneticTape", 300 * 36000, 130 * 36000, fill, stroke);
+shape.SetPosition(608400, 1267200);
+
+const docContent = shape.GetDocContent();
+const paragraph = docContent.GetElement(0);
+const run = Api.CreateRun();
+run.AddText("This is a sample text with the font size set to 15 points and the font weight set to bold.");
+
+const textPr = run.GetTextPr();
+textPr.SetFontSize(30);
+textPr.SetBold(true);
+run.SetTextPr(textPr);
+paragraph.AddElement(run);
+slide.AddObject(shape);
+```

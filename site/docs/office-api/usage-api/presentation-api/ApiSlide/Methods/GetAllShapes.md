@@ -1,0 +1,43 @@
+# GetAllShapes
+
+Returns an array with all the shape objects from the slide.
+
+## Syntax
+
+```javascript
+expression.GetAllShapes();
+```
+
+`expression` - A variable that represents a [ApiSlide](../ApiSlide.md) class.
+
+## Parameters
+
+This method doesn't have any parameters.
+
+## Returns
+
+[ApiShape](../../ApiShape/ApiShape.md)[]
+
+## Example
+
+Find all shapes on a slide in a presentation.
+
+```javascript editor-pptx
+// How do I access all the shapes in a slide in a presentation?
+
+// Retrieve the shape objects and modify their dimensions in a presentation.
+
+const presentation = Api.GetPresentation();
+const slide = presentation.GetSlideByIndex(0);
+slide.RemoveAllObjects();
+
+const fill = Api.CreateSolidFill(Api.RGB(255, 111, 61));
+const stroke = Api.CreateStroke(0, Api.CreateNoFill());
+const shape = Api.CreateShape("flowChartMagneticTape", 300 * 36000, 130 * 36000, fill, stroke);
+shape.SetPosition(608400, 1267200);
+shape.SetSize(300 * 36000, 130 * 36000);
+slide.AddObject(shape);
+
+const allShapes = slide.GetAllShapes();
+allShapes[0].SetSize(150 * 36000, 65 * 36000);
+```

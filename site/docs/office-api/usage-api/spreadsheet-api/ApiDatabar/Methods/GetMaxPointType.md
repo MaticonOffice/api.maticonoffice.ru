@@ -1,0 +1,48 @@
+# GetMaxPointType
+
+Returns the type of the maximum value condition for the data bar.
+
+## Syntax
+
+```javascript
+expression.GetMaxPointType();
+```
+
+`expression` - A variable that represents a [ApiDatabar](../ApiDatabar.md) class.
+
+## Parameters
+
+This method doesn't have any parameters.
+
+## Returns
+
+[XlConditionValueTypes](../../Enumeration/XlConditionValueTypes.md) \| null
+
+## Example
+
+Read how the upper boundary of a data bar is defined in a spreadsheet.
+
+```javascript editor-xlsx
+// How do I find out what method sets the maximum end of a data bar in a spreadsheet?
+
+// Identify whether the top limit of a data bar uses a fixed value, percentage, or automatic setting in a spreadsheet.
+
+let worksheet = Api.GetActiveSheet();
+
+worksheet.GetRange("A1").SetValue("Sales Data");
+worksheet.GetRange("A2").SetValue(100);
+worksheet.GetRange("A3").SetValue(250);
+worksheet.GetRange("A4").SetValue(150);
+worksheet.GetRange("A5").SetValue(300);
+worksheet.GetRange("A6").SetValue(75);
+
+let dataRange = worksheet.GetRange("A2:A6");
+let formatConditions = dataRange.GetFormatConditions();
+
+let dataBar = formatConditions.AddDatabar();
+
+let maxPointType = dataBar.GetMaxPointType();
+
+worksheet.GetRange("C1").SetValue("Max Point Type:");
+worksheet.GetRange("C2").SetValue(maxPointType);
+```

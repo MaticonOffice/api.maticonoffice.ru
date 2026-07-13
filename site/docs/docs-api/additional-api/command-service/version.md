@@ -1,0 +1,33 @@
+﻿# version
+
+Requests the current version number of Maticon Office Docs.
+
+## Request example
+
+```json
+{
+  "c": "version"
+}
+```
+
+## Request parameters
+
+| Parameter | Type   | Presence | Description               |
+| --------- | ------ | -------- | ------------------------- |
+| c         | string | required | The command type. |
+
+## Response example
+
+```json
+{
+  "error": 0,
+  "version": "4.3.1.4"
+}
+```
+
+## Response parameters
+
+| Parameter | Type    | Presence | Description                          |
+| --------- | ------- | -------- | ------------------------------------ |
+| error     | integer | required | An error code.               |
+| version   | string  | required | The document server version. |

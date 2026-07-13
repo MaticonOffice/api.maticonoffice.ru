@@ -1,0 +1,43 @@
+# GetInternalId
+
+Returns an internal ID of the current document content.
+
+## Syntax
+
+```javascript
+expression.GetInternalId();
+```
+
+`expression` - A variable that represents a [ApiDocumentContent](../ApiDocumentContent.md) class.
+
+## Parameters
+
+This method doesn't have any parameters.
+
+## Returns
+
+string
+
+## Example
+
+Get the unique identifier of a shape's text content in a presentation.
+
+```javascript editor-pptx
+// How do I find the internal ID assigned to a shape's text content in a presentation?
+
+// Retrieve the internal ID from a shape and display it as text on the slide.
+
+const presentation = Api.GetPresentation();
+const slide = presentation.GetSlideByIndex(0);
+slide.RemoveAllObjects();
+
+const fill = Api.CreateSolidFill(Api.HexColor('#A2C4E0'));
+const stroke = Api.CreateStroke(0, Api.CreateNoFill());
+const shape = Api.CreateShape('roundRect', Api.MillimetersToEmus(300), Api.MillimetersToEmus(130), fill, stroke);
+shape.SetPosition(Api.MillimetersToEmus(20), Api.MillimetersToEmus(35));
+const docContent = shape.GetContent();
+const internalId = docContent.GetInternalId();
+const paragraph = docContent.GetElement(0);
+paragraph.AddText('Document content internal ID: ' + internalId);
+slide.AddObject(shape);
+```

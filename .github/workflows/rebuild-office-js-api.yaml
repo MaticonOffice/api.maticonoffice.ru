@@ -1,0 +1,140 @@
+﻿name: ReBuild office-js-api
+
+run-name: "ReBuild office-js-api"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+    
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+
+      - name: Checkout api.maticonoffice.ru repository
+        uses: actions/checkout@v4
+        with:
+          path: api.maticonoffice.ru
+
+      - name: Checkout office-js-api repository (branch)
+        id: checkout_office_js_api
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: MaticonOffice/office-js-api
+          token: ${{ secrets.READ_PAT }}
+          ref: ${{ github.ref_name }}
+          path: office-js-api
+
+      - name: Checkout office-js-api repository (default)
+        if: steps.checkout_office_js_api.outcome == 'failure'
+        uses: actions/checkout@v4
+        with:
+          repository: MaticonOffice/office-js-api
+          token: ${{ secrets.READ_PAT }}
+          path: office-js-api
+
+      - name: Checkout maticonoffice repository (branch)
+        id: checkout_maticonoffice
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: MaticonOffice/maticonoffice
+          token: ${{ secrets.READ_PAT }}
+          ref: ${{ github.ref_name }}
+          path: maticonoffice
+
+      - name: Checkout maticonoffice repository (default)
+        if: steps.checkout_maticonoffice.outcome == 'failure'
+        uses: actions/checkout@v4
+        with:
+          repository: MaticonOffice/maticonoffice
+          token: ${{ secrets.READ_PAT }}
+          path: maticonoffice
+
+      - name: Checkout sdkjs repository (branch)
+        id: checkout_sdkjs
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: MaticonOffice/sdkjs
+          token: ${{ secrets.READ_PAT }}
+          ref: ${{ github.ref_name }}
+          path: sdkjs
+
+      - name: Checkout sdkjs repository (default)
+        if: steps.checkout_sdkjs.outcome == 'failure'
+        uses: actions/checkout@v4
+        with:
+          repository: MaticonOffice/sdkjs
+          token: ${{ secrets.READ_PAT }}
+          path: sdkjs
+
+      - name: Checkout sdkjs-forms repository (branch)
+        id: checkout_sdkjs_forms
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: MaticonOffice/sdkjs-forms
+          token: ${{ secrets.READ_PAT }}
+          ref: ${{ github.ref_name }}
+          path: sdkjs-forms
+
+      - name: Checkout sdkjs-forms repository (default)
+        if: steps.checkout_sdkjs_forms.outcome == 'failure'
+        uses: actions/checkout@v4
+        with:
+          repository: MaticonOffice/sdkjs-forms
+          token: ${{ secrets.READ_PAT }}
+          path: sdkjs-forms
+      
+      - name: Checkout sdkjs-ext repository (branch)
+        id: checkout_sdkjs_ext
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: MaticonOffice/sdkjs-ext
+          token: ${{ secrets.READ_PAT }}
+          ref: ${{ github.ref_name }}
+          path: sdkjs-ext
+
+      - name: Checkout sdkjs-ext repository (default)
+        if: steps.checkout_sdkjs_ext.outcome == 'failure'
+        uses: actions/checkout@v4
+        with:
+          repository: MaticonOffice/sdkjs-ext
+          token: ${{ secrets.READ_PAT }}
+          path: sdkjs-ext
+      
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      
+      - name: Build office-js-api
+        run: |
+          WORKSPACE_ROOT=$(pwd)
+          cd maticonoffice/tools/docs
+          npm install
+          python office-api/generate_docs_md.py
+          python plugins/generate_docs_methods_md.py
+          python plugins/generate_docs_events_md.py
+          python office-api/generate_docs_md.py "$WORKSPACE_ROOT/api.maticonoffice.ru/i18n/zh-CN/docusaurus-plugin-content-docs-api/current/docs/office-api/usage-api/" --translations "$WORKSPACE_ROOT/office-js-api/Translations/Office/zh-CN.json"
+          python plugins/generate_docs_methods_md.py "$WORKSPACE_ROOT/api.maticonoffice.ru/i18n/zh-CN/docusaurus-plugin-content-docs-api/current/docs/plugins/interacting-with-editors/" --translations "$WORKSPACE_ROOT/office-js-api/Translations/Plugins/Methods/zh-CN.json"
+          python plugins/generate_docs_events_md.py "$WORKSPACE_ROOT/api.maticonoffice.ru/i18n/zh-CN/docusaurus-plugin-content-docs-api/current/docs/plugins/interacting-with-editors/" --translations "$WORKSPACE_ROOT/office-js-api/Translations/Plugins/Events/zh-CN.json"
+          cd ../../../api.maticonoffice.ru
+
+          if ! git diff --exit-code; then
+              git add .
+              git commit -m "Add office-js-api documentation update from GitHub Actions"
+              git push origin ${{ github.ref_name }}
+            else
+              echo "Nothing to commit"
+            fi

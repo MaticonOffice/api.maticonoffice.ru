@@ -1,0 +1,44 @@
+# CreateGroup
+
+Creates a group of drawings.
+
+## Syntax
+
+```javascript
+expression.CreateGroup(drawings);
+```
+
+`expression` - A variable that represents a [Api](../Api.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| drawings | Required | [DrawingForGroup](../../Enumeration/DrawingForGroup.md)[] |  | An array of drawings to group. |
+
+## Returns
+
+[ApiGroup](../../ApiGroup/ApiGroup.md)
+
+## Example
+
+Group multiple shapes together in a presentation.
+
+```javascript editor-pptx
+// How do I combine shapes so they move as one unit in a presentation?
+
+// Bundle selected shapes into a single object for coordinated movement in a presentation.
+
+let presentation = Api.GetPresentation();
+let slide = presentation.GetSlideByIndex(0);
+slide.RemoveAllObjects();
+let fill1 = Api.CreateSolidFill(Api.RGB(255, 111, 61));
+let fill2 = Api.CreateSolidFill(Api.RGB(51, 51, 51));
+let stroke = Api.CreateStroke(0, Api.CreateNoFill());
+let shape1 = Api.CreateShape("rect", 300 * 36000, 130 * 36000, fill1, stroke);
+let shape2 = Api.CreateShape("rect", 150 * 36000, 80 * 36000, fill2, stroke);
+shape1.SetPosition(608400, 1267200);
+shape2.SetPosition(3100000, 1867200);
+let group = Api.CreateGroup([shape1, shape2]);
+slide.AddObject(group);
+```

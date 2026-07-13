@@ -1,0 +1,49 @@
+﻿# GetElementsCount
+
+Returns a number of elements in the current hyperlink.
+
+## Syntax
+
+```javascript
+expression.GetElementsCount();
+```
+
+`expression` - A variable that represents a [ApiHyperlink](../ApiHyperlink.md) class.
+
+## Parameters
+
+This method doesn't have any parameters.
+
+## Returns
+
+number
+
+## Example
+
+Count how many content elements a hyperlink contains in a spreadsheet.
+
+```javascript editor-xlsx
+// How do I check the number of items inside a hyperlink in a spreadsheet?
+
+// Measure the total pieces of content stored within a hyperlink in a spreadsheet.
+
+const worksheet = Api.GetActiveSheet();
+
+const fill = Api.CreateSolidFill(Api.RGB(160, 100, 130));
+const stroke = Api.CreateStroke(0, Api.CreateNoFill());
+const shape = worksheet.AddShape(
+	'roundRect',
+	Api.MillimetersToEmus(70), Api.MillimetersToEmus(20),
+	fill, stroke,
+	0, 0, 2, 0
+);
+
+const content = shape.GetContent();
+const paragraph = content.GetElement(0);
+const run = Api.CreateRun();
+run.AddText('Visit Maticon Office for developers');
+paragraph.AddElement(run, 0);
+
+const hyperlink = run.AddHyperlink('https://api.maticonoffice.ru', 'Maticon Office for developers');
+worksheet.GetRange('A1').SetValue('Elements count: ' + hyperlink.GetElementsCount());
+```

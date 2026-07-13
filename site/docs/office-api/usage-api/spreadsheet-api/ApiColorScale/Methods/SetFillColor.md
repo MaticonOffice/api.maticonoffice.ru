@@ -1,0 +1,40 @@
+# SetFillColor
+
+Sets the background color to the format condition with the previously created color object.
+Sets 'No Fill' when previously created color object is null.
+
+Inherited from [ApiFormatCondition.SetFillColor](../../ApiFormatCondition/Methods/SetFillColor.md).
+
+## Example
+
+Apply a background color to cells that satisfy a conditional formatting rule in a spreadsheet.
+
+```javascript editor-xlsx
+// How do I fill matching cells with a specific color when a formatting condition is met in a spreadsheet?
+
+// Color-code qualifying cells automatically through a conditional formatting rule in a spreadsheet.
+
+let worksheet = Api.GetActiveSheet();
+
+worksheet.GetRange("A1").SetValue("Sales Data");
+worksheet.GetRange("A2").SetValue(100);
+worksheet.GetRange("A3").SetValue(250);
+worksheet.GetRange("A4").SetValue(150);
+worksheet.GetRange("A5").SetValue(300);
+worksheet.GetRange("A6").SetValue(75);
+
+let dataRange = worksheet.GetRange("A2:A6");
+
+let formatConditions = dataRange.GetFormatConditions();
+
+let condition1 = formatConditions.Add("xlCellValue", "xlGreater", "200");
+
+worksheet.GetRange("C1").SetValue("Original color:");
+worksheet.GetRange("C2").SetValue("No Fill");
+
+let fillColor = Api.CreateColorFromRGB(255, 255, 0);
+condition1.SetFillColor(fillColor);
+
+worksheet.GetRange("C4").SetValue("New color:");
+worksheet.GetRange("C5").SetValue("Yellow background");
+```

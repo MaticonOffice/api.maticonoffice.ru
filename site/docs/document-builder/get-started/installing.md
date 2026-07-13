@@ -1,0 +1,270 @@
+﻿---
+sidebar_position: -2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Installing Document Builder
+
+Maticon Office Document Builder can be installed on various platforms to generate, edit, and convert Office and PDF documents.
+
+:::info
+
+The free version of Maticon Office Document Builder includes a watermark on all generated documents. To remove this limitation and access the full feature set, a commercial license is required.
+
+For purchasing details, please contact us at [sales@maticonoffice.ru](mailto:sales@maticonoffice.ru).
+
+:::
+
+## Prerequisites
+
+<Tabs>
+    <TabItem value="python" label="Python">
+        - [Python 3.10 - 3.12](https://www.python.org/downloads/)
+        - `pip3`. Make sure `python3` and `pip3` are installed on your system. You can check your Python version and pip3 version by using the command in the terminal:
+
+        ```bash
+        python3 --version
+        python3 -m pip --version
+        ```
+
+        :::note
+
+        Use `pip` and `python` for Windows. Make sure the executable name is `python.exe` (default on Windows) and Python is added to your `PATH` environment variable.
+
+        :::
+
+        If you need to install them, you can use the following command:
+
+        ```bash
+        sudo apt install python3 python3-pip
+        ```
+
+        :::info
+
+        You can install `python3` and `pip3` for macOS with [Homebrew](https://brew.sh/) using the following command:
+
+        ```bash
+        brew install python3
+        ```
+
+        :::
+    </TabItem>
+    <TabItem value="c++" label="C++">
+        - [Visual Studio](https://visualstudio.microsoft.com/vs/older-downloads/) for Windows
+        - GCC ≥ 4.2.1 (32-bit, 64-bit) or GCC ≥ 8 (64-bit ARM) for Linux
+        - GCC ≥ 4.2.1 for macOS
+    </TabItem>
+    <TabItem value="java" label="Java">
+        - JDK ≥ 8. Make sure that the JDK has been added to your `PATH` environment variable.
+    </TabItem>
+    <TabItem value="net" label=".NET">
+        - [.NET SDK](https://learn.microsoft.com/en-us/dotnet/core/install/)
+
+        :::note
+
+        The .NET integration for Document Builder is currently only available on Windows. There is no pre-built .NET integration for Linux or macOS at this time.
+
+        :::
+    </TabItem>
+</Tabs>
+
+## Installing
+
+Download the SDK.
+<Tabs>
+    <TabItem value="windows" label="Windows">
+        - Download the [Document Builder x64](https://github.com/MaticonOffice/DocumentBuilder/releases/latest/download/maticonoffice-documentbuilder-windows-x64.zip) or [Document Builder x86](https://github.com/MaticonOffice/DocumentBuilder/releases/latest/download/maticonoffice-documentbuilder-windows-x86.zip) SDK archive.
+        - Extract the folder from the `.zip` file.
+    </TabItem>
+    <TabItem value="linux" label="Linux">
+        - Download the [Document Builder aarch64](https://github.com/MaticonOffice/DocumentBuilder/releases/latest/download/maticonoffice-documentbuilder-linux-aarch64.tar.xz) or [Document Builder x86_64](https://github.com/MaticonOffice/DocumentBuilder/releases/latest/download/maticonoffice-documentbuilder-linux-x86_64.tar.xz) SDK archive.
+        - Extract via `tar xvJf maticonoffice-documentbuilder-linux-aarch64.tar.xz` or `tar xvJf maticonoffice-documentbuilder-linux-x86_64.tar.xz`.
+
+        For example:
+        ```bash
+        ARCH=$(uname -m)
+        if [[ "$ARCH" == "aarch64" || "$ARCH" == "arm64" ]]; then
+            FILE_NAME="maticonoffice-documentbuilder-linux-aarch64.tar.xz"
+        else
+            FILE_NAME="maticonoffice-documentbuilder-linux-x86_64.tar.xz"
+        fi
+
+        curl -L -o "$FILE_NAME" "https://github.com/MaticonOffice/DocumentBuilder/releases/latest/download/$FILE_NAME"
+
+        mkdir -p builder
+        tar xvJf "$FILE_NAME" -C builder
+        ```
+    </TabItem>
+    <TabItem value="macos" label="macOS">
+        - Download the [Document Builder arm64](https://github.com/MaticonOffice/DocumentBuilder/releases/latest/download/maticonoffice-documentbuilder-macos-arm64.tar.xz) or [Document Builder x86_64](https://github.com/MaticonOffice/DocumentBuilder/releases/latest/download/maticonoffice-documentbuilder-macos-x86_64.tar.xz) SDK archive.
+        - Extract via `tar xvJf maticonoffice-documentbuilder-macos-arm64.tar.xz` or `tar xvJf maticonoffice-documentbuilder-macos-x86_64.tar.xz`.
+
+        For example:
+        ```bash
+        ARCH=$(uname -m)
+        if [[ "$ARCH" == "arm64" ]]; then
+            FILE_NAME="maticonoffice-documentbuilder-macos-arm64.tar.xz"
+        else
+            FILE_NAME="maticonoffice-documentbuilder-macos-x86_64.tar.xz"
+        fi
+
+        curl -L -o "$FILE_NAME" "https://github.com/MaticonOffice/DocumentBuilder/releases/latest/download/$FILE_NAME"
+
+        mkdir -p builder
+        tar xvJf "$FILE_NAME" -C builder
+        ```
+    </TabItem>
+</Tabs>
+
+:::note
+
+For Python, you can use `pip3` to install the `document-builder` library in the terminal:
+
+```bash
+pip3 install document-builder
+```
+
+:::
+
+## Run the samples
+
+Download the `document-builder` [samples](https://github.com/MaticonOffice/document-builder-samples):
+
+```bash
+git clone https://github.com/MaticonOffice/document-builder-samples
+cd document-builder-samples
+```
+
+<Tabs>
+    <TabItem value="python" label="Python">
+        1. Execute `configure/configure.py` with `--test python`:
+
+            ```shell
+            python3 configure/configure.py --test python
+            ```
+
+            Provide the directory to Document Builder with `--dir` if necessary.
+            It is needed for generating an auxiliary module containing the path to Document Builder.
+
+        2. Go to the test directory:
+
+            ```shell
+            cd python/creating_basic_form
+            ```
+
+        3. Run the script:
+
+            ```shell
+            python3 main.py
+            ```
+
+        Documents will be created in the test directory.
+    </TabItem>
+    <TabItem value="c++vs" label="C++ (VS)">
+        :::note
+        Only available on Windows.
+        :::
+
+        1. Use `configure/configure.py` to generate VS project files. For example:
+
+            ```shell
+            python configure/configure.py --vs --test cpp/creating_basic_form --test cpp/creating_advanced_form
+            ```
+
+        2. Open the `.sln` file in Visual Studio. It will prompt you to retarget Windows SDK and VS toolset to your installed version – click "OK".
+
+        3. The solution is ready to be built and run. Documents will be created in the project files directory.
+
+    </TabItem>
+    <TabItem value="c++qt" label="C++ (Qt)">
+        
+        1. Use `configure/configure.py` to generate Qt project files. For example:
+
+            ```shell
+            python3 configure/configure.py --qt --test cpp
+            ```
+
+        2. Open the `.pro` file in Qt Creator.
+        3. The project is ready to be built and run. Documents will be created in the `build` directory.
+
+        #### Makefile
+
+        :::note
+        Only available on Linux and macOS.
+        :::
+
+        1. Use `configure/configure.py` to generate a Makefile. For example:
+
+            ```shell
+            python3 configure/configure.py --make --test cpp/filling_spreadsheet
+            ```
+
+        2. Go to the directory with the generated Makefile:
+
+            ```shell
+            cd out/cpp/filling_spreadsheet
+            ```
+
+        3. Call:
+
+            ```shell
+            make
+            ```
+
+            `make` will build and run the executable. Documents will be created in the same directory as the Makefile.
+    </TabItem>
+    <TabItem value="java" label="Java">
+        :::note
+        JDK 8 or newer is required.
+        :::
+
+        1. Go to the test directory:
+
+            ```shell
+            cd java/creating_presentation
+            ```
+
+        2. Compile the `Program.java` providing the path to `docbuilder.jar` located in the Document Builder directory:
+
+            ```shell
+            javac -cp "C:\Program Files\Maticon Office\DocumentBuilder\docbuilder.jar" Program.java
+            ```
+
+            On Linux or macOS, use the appropriate path:
+
+            ```shell
+            javac -cp "/opt/maticonoffice/documentbuilder/docbuilder.jar" Program.java
+            ```
+
+        3. A `.class` file should appear in the directory. Run the program:
+
+            ```shell
+            java -cp "C:\Program Files\Maticon Office\DocumentBuilder\docbuilder.jar;." Program
+            ```
+
+            Note that on UNIX systems the path separator is `:` instead of `;`. Thus, on Linux or macOS it should be:
+
+            ```shell
+            java -cp "/opt/maticonoffice/documentbuilder/docbuilder.jar:." Program
+            ```
+
+        Documents will be created in the test directory.
+    </TabItem>
+    <TabItem value="net" label=".NET">
+        :::note
+        Only available on Windows with Visual Studio and .NET SDK installed.
+        :::
+
+        1. Use `configure/configure.py` to generate VS project files. For example:
+
+            ```shell
+            python configure/configure.py --vs --test cs
+            ```
+
+        2. Open the `.sln` file in Visual Studio. Depending on your installed .NET SDK version, you may need to set a different target framework by setting it in Visual Studio project properties or editing it directly in the `.csproj` file.
+
+        3. The solution is ready to be built and run. Documents will be created in the project files directory.
+    </TabItem>
+</Tabs>

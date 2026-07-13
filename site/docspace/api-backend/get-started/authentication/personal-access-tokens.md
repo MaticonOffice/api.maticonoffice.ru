@@ -1,0 +1,142 @@
+﻿---
+sidebar_position: -2
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Personal access tokens
+
+Follow these steps to generate a PAT and use it to authorize your DocSpace account:
+
+1. Send a POST request containing the `userName` and `password` parameters to the [api/2.0/authentication](../../../../docspace/api-backend/usage-api/authenticate-me.api.mdx) address:
+
+    <Tabs>
+      <TabItem value="request" label="Request">
+        ``` http
+        POST /api/2.0/authentication HTTP/1.1
+        Host: yourportal.maticonoffice.ru
+        Content-Type: application/json
+        Accept: application/json
+
+        {
+            "userName": "yourusername",
+            "password": "yourpassword"
+        }
+        ```
+
+        :::note
+        You have to enter your own portal address to the `Host: yourportal.maticonoffice.ru` line instead of `yourportal.maticonoffice.ru` address. For security purposes, store your username and password in `env` variables and reference them in the request.
+        :::
+      </TabItem>
+      <TabItem value="response" label="Response">
+        ``` http
+        HTTP/1.1 201 Created
+        Content-Type: application/json; charset=utf-8
+        {
+            "count": 1,
+            "response": {
+                "token": "sdjhfskjdhkqy739459234",
+                "expires": "2010-07-07T17:06:03.5845502+03:00"
+            },
+            "status": 0,
+            "statusCode": 201
+        }
+        ```
+      </TabItem>
+    </Tabs>
+
+2. If authentication is successful, you will receive an API response containing a token with its lifetime.
+
+3. Use this token every time you call API methods inserting it to the `Authorization` HTTP header:
+
+   Example API Request:
+
+   ``` http
+   GET /api/2.0/people/@self HTTP/1.1
+   Host: yourportal.maticonoffice.ru
+   Accept: application/json
+   Authorization: Bearer sdjhfskjdhkqy739459234
+   ```
+
+   :::note
+   You have to enter your own portal address to the `Host: yourportal.maticonoffice.ru` line instead of `yourportal.maticonoffice.ru` address.
+   :::
+
+## Authentication request examples
+
+<Tabs>
+  <TabItem value="nodejs" label="Node.js">
+    ``` ts
+    const axios = require("axios");
+
+    async function authenticate() {
+      try {
+        const response = await axios.post("https://yourportal.maticonoffice.ru/api/2.0/authentication", {
+          userName: "yourusername",
+          password: "yourpassword"
+        }, {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        console.log(response.data);
+      } catch (error) {
+        console.error("Authentication failed:", error.response?.data || error.message);
+      }
+    }
+
+    authenticate();
+    ```
+  </TabItem>
+  <TabItem value="python" label="Python">
+    ``` py
+    import requests
+
+    url = "https://yourportal.maticonoffice.ru/api/2.0/authentication"
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    data = {
+        "userName": "yourusername",
+        "password": "yourpassword"
+    }
+
+    response = requests.post(url, json=data, headers=headers)
+
+    print(response.status_code)
+    print(response.json())
+    ```
+  </TabItem>
+  <TabItem value="csharp" label="C#">
+    ``` cs
+    var request = System.Net.WebRequest.Create("https://yourportal.maticonoffice.ru/api/2.0/authentication");
+    request.Method = "POST";
+    request.ContentType = "application/json";
+
+    var body = "{\"userName\":\"yourusername\",\"password\":\"yourpassword\"}";
+    var data = System.Text.Encoding.UTF8.GetBytes(body);
+
+    request.ContentLength = data.Length;
+    using (var stream = request.GetRequestStream())
+    {
+        stream.Write(data, 0, data.Length);
+    }
+
+    var response = (System.Net.HttpWebResponse)request.GetResponse();
+    var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+    ```
+  </TabItem>
+  <TabItem value="curl" label="cURL">
+    ``` sh
+    curl --request POST --header "Content-Type: application/json" --data "{\"userName\":\"yourusername\",\"password\":\"yourpassword\"}" "https://yourportal.maticonoffice.ru/api/2.0/authentication"
+    ```
+  </TabItem>
+</Tabs>
+
+:::note
+You have to enter your own portal address, username and password instead of `yourportal.maticonoffice.ru`, `yourusername` and `yourpassword` respectively.
+:::

@@ -1,0 +1,67 @@
+﻿import {Playground, usePlaygroundRootContext} from "../components/Playground";
+import styles from './playground.module.css';
+import {ColorModeProvider} from "@docusaurus/theme-common/internal";
+import {useLocation} from "react-router-dom";
+import {EditorType, ModeType, ScriptType, FileType} from "@site/src/components/Playground/root/PlaygroundRootContext";
+import Head from '@docusaurus/Head';
+import BrowserOnly from "@docusaurus/BrowserOnly";
+import { lazy, Suspense } from "react";
+import { SplitPane } from "@site/src/components/SplitPane";
+
+const PlaygroundLazyEditor = lazy(() =>
+    import('../components/Playground').then(m => ({ default: m.Playground.Editor })),
+)
+
+const PlaygroundContent = () => {
+    const { scriptType } = usePlaygroundRootContext()
+
+    if (scriptType === 'config') {
+        return <Playground.ConfigMode />
+    }
+
+    return (
+        <SplitPane
+            first={<Suspense><PlaygroundLazyEditor /></Suspense>}
+            second={<Playground.Preview/>}
+        />
+    )
+}
+
+const PlaygroundRoute = () => {
+    const location = useLocation();
+
+    const params = new URLSearchParams(location.search);
+    const templateUrl = params.get('templateUrl') ?? undefined;
+    const props = {
+        editorType: (params.get('editor') as EditorType) ?? undefined,
+        scriptType: (params.get('script') as ScriptType) ?? undefined,
+        modeType: (params.get('mode') as ModeType) ?? undefined,
+        initialScript: params.get('code') ?? undefined,
+        documentServerUrl: params.get('documentServerUrl') ?? undefined,
+        documentServerSecret: params.get('documentServerSecret') ?? undefined,
+        fileType: (params.get('file') as FileType) ?? undefined,
+    };
+
+    return (
+        <ColorModeProvider>
+            <Head>
+                <title>Playground | MATICONOFFICE</title>
+                <meta name="description" content="An interactive platform to explore and test Maticon Office Docs APIs without registration - test Office JavaScript API, Automation API, Plugins, and Document Builder." />
+                <meta property="og:title" content="Playground | MATICONOFFICE" />
+                <meta property="og:description" content="An interactive platform to explore and test Maticon Office Docs APIs without registration - test Office JavaScript API, Automation API, Plugins, and Document Builder." />
+            </Head>
+            <BrowserOnly>
+                {() => (
+                    <div className={styles.playgroundContainer}>
+                        <Playground.Root templateUrl={templateUrl} {...props}>
+                            <Playground.Toolbar/>
+                            <PlaygroundContent />
+                        </Playground.Root>
+                    </div>
+                )}
+            </BrowserOnly>
+        </ColorModeProvider>
+    )
+}
+
+export default PlaygroundRoute;

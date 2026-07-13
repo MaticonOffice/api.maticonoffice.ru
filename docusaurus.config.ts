@@ -1,0 +1,441 @@
+﻿import {themes as prismThemes} from 'prism-react-renderer';
+import type {Config} from '@docusaurus/types';
+import type * as Preset from '@docusaurus/preset-classic';
+import type * as Plugin from "@docusaurus/types/src/plugin";
+import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
+
+// SITE_MODE is set in CI (testing/production), NODE_ENV works for local dev
+const isDev = process.env.SITE_MODE === 'testing' || process.env.NODE_ENV === 'development';
+const locale = process.env.DOCUSAURUS_CURRENT_LOCALE ?? 'en';
+
+function localize(translations: Record<string, string>): string {
+  return translations[locale] ?? translations.en;
+}
+
+const announcementBarContent = localize({
+  en: `<a target="_blank" href="https://www.maticonoffice.ru/blog/2026/05/maticonoffice-docs-9-4"><b>Maticon Office Docs 9.4 released</b></a>: license update, Dark Document for sheets, horizontal lines, new slide themes & transitions, and more.`,
+  'zh-CN': `<a target="_blank" href="https://www.maticonoffice.ru/blog/zh-hans/2026/05/maticonoffice-docs-9-4"><b>Maticon Office 文档 9.4 发布</b></a>：许可证更新、表格单元格支持深色模式、新的幻灯片主题与切换效果等更多功能。`,
+});
+
+let keyPath = '';
+function sidebarRecursive(item) {
+  if (!item.key) {
+    item.key = keyPath + item.label;
+  }
+  
+  if (item.type === 'category') {
+    const prevPath = keyPath;
+    keyPath = (keyPath + item.key) + '.';
+    item.items.forEach(sidebarRecursive);
+    keyPath = prevPath;
+  }
+}
+
+const config: Config = {
+  title: 'MATICONOFFICE',
+  tagline: 'MATICONOFFICE',
+  favicon: 'img/favicon.ico',
+
+  url: 'https://api.maticonoffice.ru',
+  baseUrl: '/',
+
+  trailingSlash: true,
+
+  noIndex: isDev,
+
+  onBrokenLinks: 'throw',
+
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+    mermaid: true,
+  },
+
+  customFields: {
+    documentServer: isDev ? 'https://api.docs.maticonoffice.ru/' : 'https://api.docs.maticonoffice.ru/',
+    documentServerSecret: isDev ? 'MYSECRET' : 'NsOb2yUBaI9yme0wbkGAapi',
+  },
+
+  future: {
+    v4: {
+      removeLegacyPostBuildHeadAttribute: true
+    },
+    faster: {
+      mdxCrossCompilerCache: true,
+      lightningCssMinimizer: true,
+      ssgWorkerThreads: true,
+
+      swcJsLoader: true,
+      swcJsMinimizer: true,
+      swcHtmlMinimizer: true,
+      rspackBundler: true,
+      rspackPersistentCache: true
+    }
+  },
+
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'zh-CN'],
+  },
+
+  presets: [
+    [
+      'classic',
+      {
+        docs: {
+          id: 'api',
+          sidebarPath: './sidebars.ts',
+          path: './site',
+          routeBasePath: '',
+
+          editUrl: ({docPath}) => {
+            const baseUrl = 'https://github.com/MaticonOffice/api.maticonoffice.ru/tree/master/site';
+
+            // Transform sample paths: samples/{category}/{subcategory}/... → {category}/{subcategory}/samples/...
+            if (docPath.startsWith('samples/')) {
+              const parts = docPath.split('/');
+              if (parts.length >= 4) {
+                const [, category, subcategory, ...rest] = parts;
+                let filePath = rest.join('/');
+
+                // Reverse rename: {subcategory}.md → samples.md
+                if (filePath === `${subcategory}.md`) {
+                  filePath = 'samples.md';
+                }
+
+                return `${baseUrl}/${category}/${subcategory}/samples/${filePath}`;
+              }
+            }
+
+            return `${baseUrl}/${docPath}`;
+          },
+
+          docItemComponent: '@theme/ApiItem',
+
+          async sidebarItemsGenerator({defaultSidebarItemsGenerator, isCategoryIndex, ...args}) {
+            const sidebarItems = await defaultSidebarItemsGenerator({
+              ...args,
+              isCategoryIndex(params) {
+                // Exclude index.md
+                if (params.fileName.toLowerCase() === 'index') {
+                  return false;
+                }
+                return isCategoryIndex(params);
+              },
+            });
+            keyPath = args.item.dirName;
+            sidebarItems.forEach(sidebarRecursive);
+            return sidebarItems;
+          },
+        },
+        theme: {
+          customCss: './src/css/custom.css',
+        },
+        blog: {
+          path: 'changelog',
+          blogTitle: 'Changelog',
+          blogDescription: 'The history of updates and changes to the documentation.',
+          postsPerPage: 'ALL',
+          blogSidebarTitle: 'Changelog',
+          blogSidebarCount: 'ALL',
+          routeBasePath: 'changelog',
+          showReadingTime: false,
+        },
+      } satisfies Preset.Options,
+    ],
+  ],
+
+  plugins: [
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'openapi',
+        docsPluginId: "api",
+        config: {
+          workspaceBackend: {
+            specPath: "openapi/workspace/community-server.yaml",
+            outputDir: "site/workspace/api-backend/usage-api",
+            sidebarOptions: {
+              groupPathsBy: "tagGroup",
+            },
+          } satisfies OpenApiPlugin.Options,
+          workspaceHosted: {
+            specPath: "openapi/workspace/hosted-solutions.yaml",
+            outputDir: "site/workspace/for-hosting-providers/usage-api",
+            sidebarOptions: {
+              groupPathsBy: "tag",
+            },
+          } satisfies OpenApiPlugin.Options,
+          docspaceBackend: {
+            specPath: "openapi/docspace/docspace-backend.yaml",
+            outputDir: "site/docspace/api-backend/usage-api",
+            sidebarOptions: {
+              groupPathsBy: "tagGroup",
+            },
+          } satisfies OpenApiPlugin.Options,
+        } satisfies Plugin.PluginOptions,
+      },
+    ],
+    [
+      '@docusaurus/plugin-google-gtag',
+      {
+        trackingID: 'GTM-5NW47TX'
+      },
+    ],
+  ],
+
+  themeConfig: {
+    image: 'img/favicon.png',
+    colorMode: {
+      disableSwitch: false,
+      respectPrefersColorScheme: true,
+    },
+    announcementBar: {
+      content: announcementBarContent,
+      isCloseable: true,
+    },
+    navbar: {
+      logo: {
+        alt: 'MATICONOFFICE',
+        src: 'img/logo.svg',
+        srcDark: 'img/logo-dark.svg',
+      },
+      items: [
+        {
+          type: 'dropdown',
+          label: 'Docs',
+          position: 'left',
+          to: 'docs',
+          items: [
+            {
+              type: 'docSidebar',
+              sidebarId: 'docsDocs',
+              label: 'Docs API',
+              docsPluginId: 'api',
+              className: 'navbar-icon--docs-api',
+            },
+            {
+              type: 'docSidebar',
+              sidebarId: 'docsOffice',
+              label: 'Office API',
+              docsPluginId: 'api',
+              className: 'navbar-icon--office-api',
+            },
+            {
+              type: 'html',
+              value: '<hr class="navbar-dropdown-separator" />',
+            },
+            {
+              type: 'docSidebar',
+              sidebarId: 'docsPlugins',
+              label: 'Plugins',
+              docsPluginId: 'api',
+              className: 'navbar-icon--plugins',
+            },
+            {
+              type: 'docSidebar',
+              sidebarId: 'docsMacros',
+              label: 'Macros',
+              docsPluginId: 'api',
+              className: 'navbar-icon--macros',
+            },
+            {
+              type: 'docSidebar',
+              sidebarId: 'docsAI',
+              label: 'AI',
+              docsPluginId: 'api',
+              className: 'navbar-icon--ai',
+            },
+            {
+              type: 'html',
+              value: '<hr class="navbar-dropdown-separator" />',
+            },
+            {
+              type: 'docSidebar',
+              sidebarId: 'docsBuilder',
+              label: 'Document Builder',
+              docsPluginId: 'api',
+              className: 'navbar-icon--builder',
+            },
+            {
+              type: 'docSidebar',
+              sidebarId: 'docsDesktop',
+              label: 'Desktop Editors',
+              docsPluginId: 'api',
+              className: 'navbar-icon--desktop',
+            },
+          ],
+        },
+        {
+          type: 'dropdown',
+          label: 'Docspace',
+          position: 'left',
+          to: 'docspace',
+          items: [
+            {
+              type: 'docSidebar',
+              sidebarId: 'docspaceApiBackend',
+              label: 'API Reference',
+              docsPluginId: 'api',
+              className: 'navbar-icon--docspace-api',
+            },
+            {
+              type: 'docSidebar',
+              sidebarId: 'docspaceJSSdk',
+              label: 'Embed SDK',
+              docsPluginId: 'api',
+              className: 'navbar-icon--embed-sdk',
+            },
+            {
+              type: 'docSidebar',
+              sidebarId: 'docspacePlugins',
+              label: 'Plugins SDK',
+              docsPluginId: 'api',
+              className: 'navbar-icon--plugins',
+            },
+            {
+              type: 'docSidebar',
+              sidebarId: 'docspaceMCPServer',
+              label: 'MCP Server',
+              docsPluginId: 'api',
+              className: 'navbar-icon--mcp-server',
+            },
+          ],
+        },
+        {
+          to: 'samples',
+          label: 'Samples',
+          position: 'left',
+        },
+        {
+          to: 'changelog',
+          label: 'Changelog',
+          position: 'left'
+        },
+        {
+          type: 'localeDropdown',
+          position: 'right',
+        },
+        {
+          href: 'https://github.com/MaticonOffice',
+          position: 'right',
+          className: 'header-github-link',
+          'aria-label': 'GitHub repository',
+        },
+      ],
+    },
+    footer: {
+      style: 'dark',
+      links: [
+        {
+          title: 'Get information',
+          items: [
+            {
+              label: 'Blog for developers',
+              href: 'https://www.maticonoffice.ru/blog/category/for-developers?from=api',
+            },
+            {
+              label: 'For contributors',
+              href: 'https://www.maticonoffice.ru/contribute.aspx?from=api',
+            },
+            {
+              label: 'Legal notice',
+              href: 'https://www.maticonoffice.ru/legalterms.aspx?from=api',
+            },
+            {
+              label: 'Legacy version',
+              href: 'https://legacy-api.maticonoffice.ru/',
+            },
+          ],
+        },
+        {
+          title: 'Get help',
+          items: [
+            {
+              label: 'Forum',
+              href: 'https://forum.maticonoffice.ru/',
+            },
+            {
+              label: 'Code on GitHub',
+              href: 'https://github.com/MaticonOffice/',
+            },
+            {
+              label: 'Installation guides',
+              href: 'https://help.maticonoffice.ru/installation/docs-developer-index.aspx?from=api',
+            },
+            {
+              label: 'Support contact form',
+              href: 'https://www.maticonoffice.ru/support-contact-form.aspx?from=api',
+            },
+          ],
+        },
+        {
+          title: 'Community',
+          items: [
+            {
+              label: 'Stack Overflow',
+              href: 'https://stackoverflow.com/questions/tagged/maticonoffice',
+            },
+            {
+              label: 'X',
+              href: 'https://x.com/maticon_office',
+            },
+          ],
+        },
+      ],
+      copyright: `Copyright © ${new Date().getFullYear()} Maticon Office LLC. All right reserved`,
+    },
+    prism: {
+      theme: prismThemes.vsLight,
+      darkTheme: prismThemes.vsDark,
+      additionalLanguages: ["bash", "php", "csharp", "java", "ruby"],
+    },
+    algolia: {
+      appId: '59O6KESY1Y',
+      apiKey: 'b7dbab0357490826b892aeb2aad32810',
+
+      indexName: 'api-maticonoffice',
+      contextualSearch: true,
+
+      askAi: 'SWpvi77fTWXN'
+    },
+    languageTabs: [
+      {
+        highlight: "bash",
+        language: "curl",
+        logoClass: "curl",
+      },
+      {
+        highlight: "python",
+        language: "python",
+        logoClass: "python",
+      },
+      {
+        highlight: "javascript",
+        language: "javascript",
+        logoClass: "javascript",
+      },
+      {
+        highlight: "php",
+        language: "php",
+        logoClass: "php",
+      },
+      {
+        highlight: "csharp",
+        language: "csharp",
+        logoClass: "csharp",
+      },
+      {
+        highlight: "java",
+        language: "java",
+        logoClass: "java",
+        variant: "unirest",
+      },
+    ],
+  } satisfies Preset.ThemeConfig,
+
+  themes: ["docusaurus-theme-openapi-docs", "@docusaurus/theme-mermaid"],
+};
+
+export default config;

@@ -1,0 +1,52 @@
+# SetLegendFontSize
+
+Specifies the legend font size.
+
+## Syntax
+
+```javascript
+expression.SetLegendFontSize(nFontSize);
+```
+
+`expression` - A variable that represents a [ApiChart](../ApiChart.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| nFontSize | Required | [pt](../../Enumeration/pt.md) |  | The text size value measured in points. |
+
+## Returns
+
+boolean
+
+## Example
+
+Change the text size of a chart legend in a presentation.
+
+```javascript editor-pptx
+// How do I make the legend text larger or smaller in a presentation?
+
+// Create a chart and adjust the font size of the text in its legend in a presentation.
+
+const presentation = Api.GetPresentation();
+const slide = presentation.GetSlideByIndex(0);
+slide.RemoveAllObjects();
+
+const chart = Api.CreateChart("bar3D", [
+	[200, 240, 280],
+	[250, 260, 280]
+], ["Projected Revenue", "Estimated Costs"], [2014, 2015, 2016], 4051300, 2347595, 24);
+chart.SetVerAxisTitle("USD In Hundred Thousands", 10);
+chart.SetHorAxisTitle("Year", 11);
+chart.SetTitle("Financial Overview", 13);
+chart.SetSize(300 * 36000, 130 * 36000);
+chart.SetLegendFontSize(16);
+chart.SetPosition(608400, 1267200);
+
+let fill = Api.CreateSolidFill(Api.RGB(51, 51, 51));
+chart.SetSeriesFill(fill, 0, false);
+fill = Api.CreateSolidFill(Api.RGB(255, 111, 61));
+chart.SetSeriesFill(fill, 1, false);
+slide.AddObject(chart);
+```

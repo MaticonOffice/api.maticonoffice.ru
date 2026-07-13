@@ -1,0 +1,55 @@
+﻿# GetApplicationId
+
+Returns the application ID from the current OLE object.
+
+## Syntax
+
+```javascript
+expression.GetApplicationId();
+```
+
+`expression` - A variable that represents a [ApiOleObject](../ApiOleObject.md) class.
+
+## Parameters
+
+This method doesn't have any parameters.
+
+## Returns
+
+string
+
+## Example
+
+Retrieve the application identifier associated with an embedded object in a presentation.
+
+```javascript editor-pptx
+// How do I get the application ID of an embedded object in a presentation?
+
+// Read the application ID from a linked or embedded object in a presentation.
+
+const presentation = Api.GetPresentation();
+const slide = presentation.GetSlideByIndex(0);
+slide.RemoveAllObjects();
+
+const oleObject = Api.CreateOleObject(
+	'https://static.maticonoffice.ru/assets/docs/samples/img/maticonoffice_logo.png',
+	150 * 36000, 150 * 36000,
+	'https://youtu.be/SKGz4pmnpgY',
+	'asc.{38E022EA-AD92-45FC-B22B-49DF39746DB4}'
+);
+oleObject.SetSize(200 * 36000, 130 * 36000);
+oleObject.SetPosition(70 * 36000, 30 * 36000);
+slide.AddObject(oleObject);
+const appId = oleObject.GetApplicationId();
+
+const gs1 = Api.CreateGradientStop(Api.RGB(255, 213, 191), 0);
+const gs2 = Api.CreateGradientStop(Api.RGB(255, 111, 61), 100000);
+const fill = Api.CreateLinearGradientFill([gs1, gs2], 5400000);
+const stroke = Api.CreateStroke(0, Api.CreateNoFill());
+const drawing = Api.CreateShape('rect', 300 * 36000, 15 * 36000, fill, stroke);
+drawing.SetPosition(20 * 36000, 170 * 36000);
+const docContent = drawing.GetContent();
+const paragraph = docContent.GetElement(0);
+paragraph.AddText('The application ID for the current OLE object: ' + appId);
+slide.AddObject(drawing);
+```

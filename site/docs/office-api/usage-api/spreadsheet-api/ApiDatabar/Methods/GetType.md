@@ -1,0 +1,48 @@
+# GetType
+
+Returns the type of the data bar conditional formatting rule.
+
+## Syntax
+
+```javascript
+expression.GetType();
+```
+
+`expression` - A variable that represents a [ApiDatabar](../ApiDatabar.md) class.
+
+## Parameters
+
+This method doesn't have any parameters.
+
+## Returns
+
+[XlFormatConditionType](../../Enumeration/XlFormatConditionType.md)
+
+## Example
+
+Identify the kind of conditional formatting rule applied to a range in a spreadsheet.
+
+```javascript editor-xlsx
+// How do I tell what category of formatting rule is used on a data bar in a spreadsheet?
+
+// Distinguish a data bar rule from other conditional formatting types in a spreadsheet.
+
+let worksheet = Api.GetActiveSheet();
+
+worksheet.GetRange("A1").SetValue("Sales Data");
+worksheet.GetRange("A2").SetValue(100);
+worksheet.GetRange("A3").SetValue(250);
+worksheet.GetRange("A4").SetValue(150);
+worksheet.GetRange("A5").SetValue(300);
+worksheet.GetRange("A6").SetValue(75);
+
+let dataRange = worksheet.GetRange("A2:A6");
+let formatConditions = dataRange.GetFormatConditions();
+
+let dataBar = formatConditions.AddDatabar();
+
+let conditionType = dataBar.GetType();
+
+worksheet.GetRange("C1").SetValue("Type:");
+worksheet.GetRange("C2").SetValue(conditionType);
+```

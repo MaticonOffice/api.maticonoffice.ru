@@ -1,0 +1,35 @@
+﻿import type {ReactNode} from 'react';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import Layout from '@theme/Layout';
+import { FeaturePageTemplate } from "@site/src/components/FeaturePageLayout";
+import Link from "@docusaurus/Link";
+import { WorkspaceFeatures } from "@site/src/features";
+
+const templateProps: FeaturePageTemplate.Props = {
+  title: 'Workspace',
+  description: (
+    <>
+      Maticon Office Workspace is a collaborative cloud platform that allows users to manage
+      documents, projects, emails, client relations, and timetables in one place.
+    </>
+  ),
+  links: [
+    <>If you have any questions about Maticon Office DocSpace, try the <Link href='/workspace/api-backend/more-information/faq'>FAQ</Link> section first.</>,
+    <>You can request a feature or report a bug by posting an issue on <a href='https://github.com/MaticonOffice/CommunityServer/issues'>GitHub</a>.</>,
+    <>You can also ask our developers on <a href='https://forum.maticonoffice.ru/c/workspace/33'>MATICONOFFICE forum</a> (registration required).</>,
+  ],
+  linkPrefix: WorkspaceFeatures.linkPrefix,
+  items: WorkspaceFeatures.items,
+};
+
+export default function Home(): ReactNode {
+  const {siteConfig} = useDocusaurusContext();
+  return (
+    <Layout
+      title={`${siteConfig.title} Workspace API`}
+      description="Detailed guides on how to integrate Maticon Office Workspace into your solution, manage documents, projects, emails, CRM, and timetables in one place."
+    >
+      <FeaturePageTemplate {...templateProps}/>
+    </Layout>
+  );
+}

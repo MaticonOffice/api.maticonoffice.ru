@@ -1,0 +1,45 @@
+# POISSON_DIST
+
+Returns the Poisson distribution.
+
+## Syntax
+
+```javascript
+expression.POISSON_DIST(arg1, arg2, arg3);
+```
+
+`expression` - A variable that represents a [ApiWorksheetFunction](../ApiWorksheetFunction.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| arg1 | Required | [ApiRange](../../ApiRange/ApiRange.md) \| [ApiName](../../ApiName/ApiName.md) \| number |  | The number of events. |
+| arg2 | Required | [ApiRange](../../ApiRange/ApiRange.md) \| [ApiName](../../ApiName/ApiName.md) \| number |  | The expected numeric value, a positive number. |
+| arg3 | Required | [ApiRange](../../ApiRange/ApiRange.md) \| [ApiName](../../ApiName/ApiName.md) \| boolean |  | A logical value (**true** or **false**) that determines the function form. If it is **true**, the function returns the cumulative Poisson probability. If it is **false**, the function returns the Poisson probability mass function. |
+
+## Returns
+
+number
+
+## Example
+
+Calculate event probability using the Poisson statistical distribution in a spreadsheet.
+
+```javascript editor-xlsx
+// How do I find the probability of events occurring at a given rate in a spreadsheet?
+
+// Determine cumulative or individual event probabilities from a Poisson distribution in a spreadsheet.
+
+const worksheet = Api.GetActiveSheet();
+
+//method params
+let x = 9;
+let mean = 12;
+let cumulative = false;
+
+let func = Api.WorksheetFunction;
+let ans = func.POISSON_DIST(x, mean, cumulative);
+
+worksheet.GetRange("C1").SetValue(ans);
+```

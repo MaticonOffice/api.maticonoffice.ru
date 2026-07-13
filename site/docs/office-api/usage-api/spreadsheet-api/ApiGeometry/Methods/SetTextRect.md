@@ -1,0 +1,56 @@
+# SetTextRect
+
+Sets the text rectangle for the current geometry.
+
+## Syntax
+
+```javascript
+expression.SetTextRect(sLeft, sTop, sRight, sBottom);
+```
+
+`expression` - A variable that represents a [ApiGeometry](../ApiGeometry.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| sLeft | Required | string |  | The left guide name or value. |
+| sTop | Required | string |  | The top guide name or value. |
+| sRight | Required | string |  | The right guide name or value. |
+| sBottom | Required | string |  | The bottom guide name or value. |
+
+## Returns
+
+boolean
+
+## Example
+
+Define the text area boundaries within a custom shape in a spreadsheet.
+
+```javascript editor-xlsx
+// How do I control where text appears inside a shape in a spreadsheet?
+
+// Restrict the writable region of a shape so text fits within a specific zone in a spreadsheet.
+
+let worksheet = Api.GetActiveSheet();
+let customGeometry = Api.CreateCustomGeometry();
+customGeometry.AddAdj("adj1", 25000);
+customGeometry.SetAdjValue("adj1", 30000);
+worksheet.GetRange("A7").SetValue("Adjustment: " + customGeometry.GetAdjValue("adj1"));
+customGeometry.AddGuide("x1", "*/", "adj1", "w", "100000");
+customGeometry.SetTextRect("x1", "0", "w", "h");
+customGeometry.AddConnectionPoint("0", "hc", "0");
+let path = customGeometry.AddPath();
+path.SetStroke(true);
+path.SetFill("norm");
+path.MoveTo("l", "t");
+path.LineTo("r", "t");
+path.LineTo("r", "b");
+path.LineTo("l", "b");
+path.LineTo("x1", "hd2");
+path.Close();
+let fill = Api.CreateSolidFill(Api.RGB(100, 150, 200));
+let stroke = Api.CreateStroke(18000, Api.CreateSolidFill(Api.RGB(50, 75, 100)));
+let shape = worksheet.AddShape("rect", 60 * 36000, 60 * 36000, fill, stroke, 9, 0, 2, 2);
+shape.SetGeometry(customGeometry);
+```

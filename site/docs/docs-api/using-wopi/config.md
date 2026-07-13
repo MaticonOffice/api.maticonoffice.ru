@@ -1,0 +1,127 @@
+﻿---
+sidebar_position: -10
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Config
+
+For the WOPI protocol setup, it is necessary to edit the WOPI parameters in the configuration file, which can be found (or created) at the following path:
+
+<Tabs>
+  <TabItem value="windows" label="Windows">
+      ``` bash
+      %ProgramFiles%\Maticon Office\DocumentServer\config\local.json
+      ```
+  </TabItem>
+  <TabItem value="linux" label="Linux">
+      ``` bash
+      /etc/maticonoffice/documentserver/local.json
+      ```
+  </TabItem>
+</Tabs>
+
+:::note
+The default values are available in the `default.json` configuration file, which is available in the folders above (for Linux and Windows). Please do not edit the contents of the `default.json` file directly. The default values will be restored each time you restart Docker container or upgrade Maticon Office Docs to a new version and all your changes will be lost.
+:::
+
+Restart the services for the config changes to take effect:
+
+<Tabs>
+  <TabItem value="rpm-deb" label="RPM/DEB packages">
+      ``` bash
+      systemctl restart ds-*
+      ```
+  </TabItem>
+  <TabItem value="docker" label="Docker">
+      ``` bash
+      supervisorctl restart all
+      ```
+  </TabItem>
+</Tabs>
+
+## Parameters
+
+```mdx-code-block
+import APITable from '@site/src/components/APITable/APITable';
+
+<APITable>
+```
+
+| Parameter                      | Type             | Example                                                                                                                                             | Description                                                                                                                                                                                                                                      |
+| ------------------------------ | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| wopi.enable                    | boolean          | false                                                                                                                                               | Whether WOPI is enabled or not.                                                                                                                                                                                                               |
+| wopi.host                      | string           | ""                                                                                                                                                  | The WOPI host (host name or IP address).                                                                                                                                                                                                 |
+| wopi.htmlTemplate              | string           | "../../web-apps/apps/api/wopi"                                                                                                                      | A path to the WOPI HTML template.                                                                                                                                                                                                        |
+| wopi.wopiZone                  | string           | "external-http"                                                                                                                                     | A zone that the document server uses to navigate the browser to the WOPI application.                                                                                                                                                    |
+| wopi.favIconUrlWord            | string           | "/web-apps/apps/<br/>documenteditor/main/<br/>resources/img/favicon.ico"                                                                            | A path to the favicon for the document editor.                                                                                                                                                                                           |
+| wopi.favIconUrlCell            | string           | "/web-apps/apps/<br/>spreadsheeteditor/main/<br/>resources/img/favicon.ico"                                                                         | A path to the favicon for the spreadsheet editor.                                                                                                                                                                                        |
+| wopi.favIconUrlSlide           | string           | "/web-apps/apps/<br/>presentationeditor/main/<br/>resources/img/favicon.ico"                                                                        | A path to the favicon for the presentation editor.                                                                                                                                                                                       |
+| wopi.favIconUrlPdf             | string           | "/web-apps/apps/<br/>pdfeditor/main/<br/>resources/img/favicon.ico"                                                                                 | A path to the favicon for the pdf editor.                                                                                                                                                                                                |
+| wopi.fileInfoBlockList         | string[] | \["FileUrl"]                                                                                                                                        | A list of WOPI file information parameters that are blocked when sending this array to the browser. However, these parameters are available on the server.                                                                               |
+| wopi.pdfView                   | string[] | \["djvu", "xps", "oxps"]                                                                                                                            | The file types that can be viewed in the pdf editor.                                                                                                                                                                                     |
+| wopi.pdfEdit                   | string[] | \["pdf"]                                                                                                                                            | The file types that can be edited in the pdf editor.                                                                                                                                                                                     |
+| wopi.forms                     | string[] | \["pdf"]                                                                                                                                            | The form file types.                                                                                                                                                                                                                     |
+| wopi.wordView                  | string[] | \["doc", "dotm", "dot", "fodt", "ott", "rtf", "mht", "mhtml",<br/>"html", "htm", "xml", "epub",<br/>"fb2", "sxw", "stw", "wps",<br/>"wpt", "pages"] | The file types that can be viewed in the document editor.                                                                                                                                                                                |
+| wopi.wordEdit                  | string[] | \["docx", "dotx", "docm", "odt",<br/>"txt"]                                                                                                         | The file types that can be edited in the document editor.                                                                                                                                                                                |
+| wopi.cellView                  | string[] | \["xls", "xlsb", "xltm", "xlt",<br/>"fods", "ots", "sxc", "xml",<br/>"et", "ett", "numbers"]                                                        | The file types that can be viewed in the spreadsheet editor.                                                                                                                                                                             |
+| wopi.cellEdit                  | string[] | \["xlsx", "xltx", "xlsm", "ods",<br/>"csv"]                                                                                                         | The file types that can be edited in the spreadsheet <br/>editor.                                                                                                                                                                        |
+| wopi.slideView                 | string[] | \["ppt", "ppsx", "ppsm", "pps",<br/>"potm", "pot", "fodp", "otp",<br/>"sxi", "dps", "dpt", "key"]                                                   | The file types that can be viewed in the presentation editor.                                                                                                                                                                            |
+| wopi.slideEdit                 | string[] | \["pptx", "potx", "pptm", "odp"]                                                                                                                    | The file types that can be edited in the presentation editor.                                                                                                                                                                             |
+| wopi.publicKey                 | string           | ""                                                                                                                                                  | The public key that the integrator uses to check the private key.<br/><br/>Please note that starting from version 8.3, the values of this parameter in the *default.json* and *local.json* files are different.                          |
+| wopi.modulus                   | string           | ""                                                                                                                                                  | The RSA modulus in the Base64-encoded format that is used to retrieve the public key.<br/><br/>Please note that starting from version 8.3, the values of this parameter in the *default.json* and *local.json* files are different.      |
+| wopi.exponent                  | string           | "65537"                                                                                                                                             | The RSA exponent in the Base64-encoded format that is used to retrieve the public key.                                                                                                                                                   |
+| wopi.privateKey                | string           | ""                                                                                                                                                  | The private key that signs the document server request.<br/><br/>Please note that starting from version 8.3, the values of this parameter in the *default.json* and *local.json* files are different.                                    |
+| wopi.publicKeyOld              | string           | ""                                                                                                                                                  | The old public key that the integrator used to check the private key.<br/><br/>Please note that starting from version 8.3, the values of this parameter in the *default.json* and *local.json* files are different.                      |
+| wopi.modulusOld                | string           | ""                                                                                                                                                  | The old RSA modulus in the Base64-encoded format that was used to retrieve the public key.<br/><br/>Please note that starting from version 8.3, the values of this parameter in the *default.json* and *local.json* files are different. |
+| wopi.exponentOld               | string           | "65537"                                                                                                                                             | The old RSA exponent in the Base64-encoded format that was used to retrieve the public key.                                                                                                                                              |
+| wopi.privateKeyOld             | string           | ""                                                                                                                                                  | The old private key that signed the document server request.<br/><br/>Please note that starting from version 8.3, the values of this parameter in the *default.json* and *local.json* files are different.                               |
+| wopi.refreshLockInterval       | string           | "10m"                                                                                                                                               | The interval time in minutes for refreshing the lock on a file by resetting its automatic expiration timer to 30 minutes.                                                                                                                |
+| wopi.dummy                     | object           |                                                                                                                                                     | The properties of dummy handlers for stress testing.                                                                                                                                                                                     |
+| wopi.dummy.enable              | boolean          | false                                                                                                                                               | Whether the dummy handlers are enabled or not.                                                                                                                                                                                                |
+| wopi.dummy.<br/>sampleFilePath | string           | ""                                                                                                                                                  | The dummy path to the sample file.                                                                                                                                                                                                       |
+
+```mdx-code-block
+</APITable>
+```
+
+## Example
+
+```json
+{
+  "wopi": {
+    "enable": false,
+    "host": "",
+    "htmlTemplate": "../../web-apps/apps/api/wopi",
+    "wopiZone": "external-http",
+    "favIconUrlWord": "/web-apps/apps/documenteditor/main/resources/img/favicon.ico",
+    "favIconUrlCell": "/web-apps/apps/spreadsheeteditor/main/resources/img/favicon.ico",
+    "favIconUrlSlide": "/web-apps/apps/presentationeditor/main/resources/img/favicon.ico",
+    "favIconUrlPdf": "/web-apps/apps/pdfeditor/main/resources/img/favicon.ico",
+    "fileInfoBlockList": ["FileUrl"],
+    "pdfView": ["djvu", "xps", "oxps"],
+    "pdfEdit": ["pdf"],
+    "forms": ["pdf"],
+    "wordView": ["doc", "dotm", "dot", "fodt", "ott", "rtf", "mht", "mhtml", "html", "htm", "xml", "epub", "fb2", "sxw", "stw", "wps", "wpt", "pages"],
+    "wordEdit": ["docx", "dotx", "docm", "odt", "txt"],
+    "cellView": ["xls", "xlsb", "xltm", "xlt", "fods", "ots", "sxc", "xml", "et", "ett", "numbers"],
+    "cellEdit": ["xlsx", "xltx", "xlsm", "ods", "csv"],
+    "slideView": ["ppt", "ppsx", "ppsm", "pps", "potm", "pot", "fodp", "otp", "sxi", "dps", "dpt", "key"],
+    "slideEdit": ["pptx", "potx", "pptm", "odp"],
+    "publicKey": "",
+    "modulus": "",
+    "exponent": 65537,
+    "privateKey": "",
+    "publicKeyOld": "",
+    "modulusOld": "",
+    "exponentOld": 65537,
+    "privateKeyOld": "",
+    "refreshLockInterval": "10m",
+    "dummy": {
+      "enable": false,
+      "sampleFilePath": ""
+    }
+  }
+}
+```

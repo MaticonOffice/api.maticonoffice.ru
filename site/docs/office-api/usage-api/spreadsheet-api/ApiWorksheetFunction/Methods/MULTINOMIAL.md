@@ -1,0 +1,35 @@
+# MULTINOMIAL
+
+Returns the ratio of the factorial of a sum of numbers to the product of factorials.
+
+## Syntax
+
+```javascript
+expression.MULTINOMIAL(args);
+```
+
+`expression` - A variable that represents a [ApiWorksheetFunction](../ApiWorksheetFunction.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| args | Required | [ApiRange](../../ApiRange/ApiRange.md) \| [ApiName](../../ApiName/ApiName.md) \| number |  | Up to 255 numeric values for which the multinomial will be returned. The first argument is required, subsequent arguments are optional. |
+
+## Returns
+
+number
+
+## Example
+
+Calculate the multinomial coefficient of a set of numbers in a spreadsheet.
+
+```javascript editor-xlsx
+// What is the multinomial coefficient value for a group of numbers in a spreadsheet?
+
+// Find the ratio of combined factorial to individual factorials in a spreadsheet.
+
+let worksheet = Api.GetActiveSheet();
+let func = Api.WorksheetFunction;
+worksheet.GetRange("A1").SetValue(func.MULTINOMIAL(2, 0, 0, 0, 0, 3, 0, 0, 0, 0, 4, 0, 0, 0, 0, 5));
+```

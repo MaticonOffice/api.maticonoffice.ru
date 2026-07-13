@@ -1,0 +1,55 @@
+﻿---
+sidebar_position: -6
+---
+
+# Integrating
+
+## Where can I find integration examples for Maticon Office Docs?
+
+The examples of integration of Maticon Office Docs with your own website can be found [here](../../samples/language-specific-examples/language-specific-examples.md). You can choose among different web development programming languages:
+
+- [.Net (C#) / .Net (C# MVC)](../../samples/language-specific-examples/net-example.md)
+- [Java](../../samples/language-specific-examples/java-example.md)
+- [Java Spring](../../samples/language-specific-examples/java-spring-example.md)
+- [Node.js](../../samples/language-specific-examples/nodejs-example.md)
+- [PHP](../../samples/language-specific-examples/php-example.md)
+- [PHP (Laravel)](../../samples/language-specific-examples/php-laravel-example.md)
+- [Python](../../samples/language-specific-examples/python-example.md)
+- [Ruby](../../samples/language-specific-examples/ruby-example.md)
+- [Go](../../samples/language-specific-examples/go-example.md)
+- [Java integration SDK](../../samples/language-specific-examples/java-integration-sdk.md)
+
+The examples will show where to get the source codes, how to install and set up the working examples for integrating Maticon Office Docs into your website written with the help of one of these programming languages.
+
+If you want to connect Maticon Office Docs to one of the existing document management services, you can see the ready-made connectors for the following services:
+
+- [Alfresco](../../get-started/ready-to-use-connectors/alfresco-integration.md)
+- [Chamilo](../../get-started/ready-to-use-connectors/chamilo-integration.md)
+- [Confluence](../../get-started/ready-to-use-connectors/confluence-integration.md)
+- [Drupal](../../get-started/ready-to-use-connectors/drupal-integration.md)
+- [HumHub](../../get-started/ready-to-use-connectors/humhub-integration.md)
+- [Liferay](../../get-started/ready-to-use-connectors/liferay-integration.md)
+- [Mattermost](../../get-started/ready-to-use-connectors/mattermost-integration.md)
+- [Moodle](../../get-started/ready-to-use-connectors/moodle-integration.md)
+- [Nextcloud](../../get-started/ready-to-use-connectors/nextcloud-integration.md)
+- [Nuxeo](../../get-started/ready-to-use-connectors/nuxeo-integration.md)
+- [Odoo](../../get-started/ready-to-use-connectors/odoo-integration.md)
+- [ownCloud](../../get-started/ready-to-use-connectors/owncloud-integration.md)
+- [Plone](../../get-started/ready-to-use-connectors/plone-integration.md)
+- [Redmine](../../get-started/ready-to-use-connectors/redmine-integration.md)
+- [SharePoint](../../get-started/ready-to-use-connectors/sharepoint-integration.md)
+- [Strapi](../../get-started/ready-to-use-connectors/strapi-integration.md)
+- [SuiteCRM](../../get-started/ready-to-use-connectors/suitecrm-integration.md)
+- [WordPress](../../get-started/ready-to-use-connectors/wordpress-integration.md)
+
+Most of the connectors are available from the corresponding service application store and are easy to install. Just follow the step-by-step instructions at the [connector page](../../get-started/ready-to-use-connectors/nextcloud-integration.md) and connect Maticon Office Docs to your service.
+
+## Which paths should I specify when integrating Maticon Office Docs with my website?
+
+After you download and unpack the examples for integration Maticon Office Docs with your website, you need to open the source codes and replace all the instances of the **https\://documentserver/** string with the actual address of your installed Maticon Office Docs.
+
+## What settings should be used when connecting Maticon Office to ownClowd/Nextcloud via a local and public network?
+
+When connecting your ownCloud/Nextcloud installation to Maticon Office Docs, you need to make sure that the server with Maticon Office Docs installed is accessible both for the internet browsers and ownCloud/Nextcloud installations, i.e. the requests can be sent to and the responses can be accepted from the computer with Maticon Office Docs installed.
+
+The interaction scheme between ownCloud installation and Maticon Office Docs is available [here](../../get-started/ready-to-use-connectors/owncloud-integration.md#configuring-maticonoffice-app-for-owncloud). If you use Nextcloud, visit [this page](../../get-started/ready-to-use-connectors/nextcloud-integration.md#configuring-maticonoffice-app-for-nextcloud) to see how you can properly set up your server.

@@ -1,0 +1,52 @@
+# SetFontFamily
+
+Sets all 4 font slots with the specified font family.
+
+## Syntax
+
+```javascript
+expression.SetFontFamily(sFontFamily);
+```
+
+`expression` - A variable that represents a [ApiRun](../ApiRun.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| sFontFamily | Required | string |  | The font family or families used for the current text run. |
+
+## Returns
+
+[ApiTextPr](../../ApiTextPr/ApiTextPr.md)
+
+## Example
+
+Change the font family of text in a presentation.
+
+```javascript editor-pptx
+// What font families can be applied to text in a presentation?
+
+// Set a custom font family for text runs in a presentation.
+
+const presentation = Api.GetPresentation();
+const slide = presentation.GetSlideByIndex(0);
+slide.RemoveAllObjects();
+
+const fill = Api.CreateSolidFill(Api.RGB(255, 111, 61));
+const stroke = Api.CreateStroke(0, Api.CreateNoFill());
+const shape = Api.CreateShape("flowChartMagneticTape", 300 * 36000, 130 * 36000, fill, stroke);
+shape.SetPosition(608400, 1267200);
+
+const docContent = shape.GetDocContent();
+const paragraph = docContent.GetElement(0);
+let run = Api.CreateRun();
+run.AddText("This is just a sample text. ");
+paragraph.AddElement(run);
+
+run = Api.CreateRun();
+run.SetFontFamily("Comic Sans MS");
+run.AddText("This is a text run with the font family set to 'Comic Sans MS'.");
+paragraph.AddElement(run);
+slide.AddObject(shape);
+```

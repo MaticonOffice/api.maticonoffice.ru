@@ -1,0 +1,52 @@
+# CreateTextPr
+
+Creates the empty text properties.
+
+## Syntax
+
+```javascript
+expression.CreateTextPr();
+```
+
+`expression` - A variable that represents a [Api](../Api.md) class.
+
+## Parameters
+
+This method doesn't have any parameters.
+
+## Returns
+
+[ApiTextPr](../../ApiTextPr/ApiTextPr.md)
+
+## Example
+
+Format text with custom style properties in a presentation.
+
+```javascript editor-pptx
+// How do I make text bold and change its size in a presentation?
+
+// Apply bold formatting and set a custom font size for text in a presentation.
+
+const presentation = Api.GetPresentation();
+const slide = presentation.GetSlideByIndex(0);
+slide.RemoveAllObjects();
+
+const fill = Api.CreateSolidFill(Api.RGB(255, 111, 61));
+const stroke = Api.CreateStroke(0, Api.CreateNoFill());
+const shape = Api.CreateShape("flowChartMagneticTape", 300 * 36000, 130 * 36000, fill, stroke);
+shape.SetPosition(608400, 1267200);
+
+const docContent = shape.GetDocContent();
+docContent.RemoveAllElements();
+const textPr = Api.CreateTextPr();
+textPr.SetFontSize(50);
+textPr.SetBold(true);
+const paragraph = Api.CreateParagraph();
+paragraph.SetJc("left");
+const run = Api.CreateRun();
+run.AddText("This is a sample text with the font size set to 25 points and the font weight set to bold.");
+run.SetTextPr(textPr);
+paragraph.AddElement(run);
+docContent.Push(paragraph);
+slide.AddObject(shape);
+```

@@ -1,0 +1,36 @@
+# FLOOR
+
+Rounds a number down to the nearest multiple of significance.
+
+## Syntax
+
+```javascript
+expression.FLOOR(arg1, arg2);
+```
+
+`expression` - A variable that represents a [ApiWorksheetFunction](../ApiWorksheetFunction.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| arg1 | Required | [ApiRange](../../ApiRange/ApiRange.md) \| [ApiName](../../ApiName/ApiName.md) \| number |  | The numeric value to round down. |
+| arg2 | Required | [ApiRange](../../ApiRange/ApiRange.md) \| [ApiName](../../ApiName/ApiName.md) \| number |  | The multiple of significance to round down to. The number to round down and the multiple of significance must have the same sign. |
+
+## Returns
+
+number
+
+## Example
+
+Round a number down to the nearest multiple of a specified value in a spreadsheet.
+
+```javascript editor-xlsx
+// How do I round a number down to a specific increment in a spreadsheet?
+
+// Decrease a number to the nearest multiple of a given significance in a spreadsheet.
+
+let worksheet = Api.GetActiveSheet();
+let func = Api.WorksheetFunction;
+worksheet.GetRange("A1").SetValue(func.FLOOR(5.786, 0.7));
+```

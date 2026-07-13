@@ -1,0 +1,120 @@
+﻿---
+sidebar_position: -11
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Overview
+
+Starting from version 6.4, Maticon Office Docs offers support for the **Web Application Open Platform Interface Protocol (WOPI)** - a REST-based protocol that is used to integrate your application with an online office. WOPI operations allow you to open files stored on a server, edit and save them.
+
+This documentation describes:
+
+- WOPI protocol [configuration parameters](./config.md);
+- [key concepts](./key-concepts.md) that are vital to understand the requirements for integrating with WOPI clients;
+- file properties that can be specified via [WOPI discovery](./wopi-discovery.md);
+- a [host page](./host-page.md) that must be built to create an iframe element within the online office;
+- [proof keys](./proof-keys.md) which are used to check that the request is received from the online office;
+- supported [WOPI REST API](./wopi-rest-api/wopi-rest-api.md) functions;
+- available messages that can be posted via [PostMessage](./postmessage.md);
+- request parameters for [converting](./conversion-api.md) different file formats in the online office;
+- a scheme for [editing binary document formats](./editing-binary-documents.md);
+- [differences](./api-vs-wopi.md) between Maticon Office Docs API and WOPI.
+
+For further information on the WOPI protocol, please read the [WOPI documentation](https://docs.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/online/).
+
+All the necessary [WOPI settings](https://help.maticonoffice.ru/installation/docs-developer-configuring.aspx#WOPI) you can find and change in the configuration file which can be found (or created) at the following path:
+
+<Tabs>
+  <TabItem value="windows" label="Windows">
+      ``` bash
+      %ProgramFiles%\Maticon Office\DocumentServer\config\local.json
+      ```
+  </TabItem>
+  <TabItem value="linux" label="Linux">
+      ``` bash
+      /etc/maticonoffice/documentserver/local.json
+      ```
+  </TabItem>
+</Tabs>
+
+:::note
+The default values are available in the *default.json* configuration file, which is available in the folders above (for Linux and Windows). Please do not edit the contents of the *default.json* file directly. The default values will be restored each time you restart Docker container or upgrade **Maticon Office Docs** to a new version and all your changes will be lost.
+:::
+
+## Enabling WOPI
+
+To enable WOPI, set the [wopi.enable](https://help.maticonoffice.ru/installation/docs-developer-configuring.aspx#wopi-enable) parameter in the Maticon Office Docs config to **true**:
+
+### Parameters
+
+| Name        | Type    | Example | Description                                                        |
+| ----------- | ------- | ------- | ------------------------------------------------------------------ |
+| wopi.enable | boolean | true    | Whether WOPI is enabled or not. The default value is **false**. |
+
+### Example
+
+```json
+{
+  "wopi": {
+    "enable": true
+  }
+}
+```
+
+## IP filter
+
+Maticon Office Docs can accept WOPI requests only from the trusted integrator. The IP address of such an integrator must be included in the [WOPI domain allow list](https://docs.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/online/build-test-ship/settings#wopi-domain-allow-list). At the same time, access for all the other integrators must be denied.
+
+:::note
+By default, all the IP addresses are considered trusted.
+:::
+
+Follow the steps below to configure the Maticon Office Docs [IP filter](https://help.maticonoffice.ru/installation/docs-developer-configuring.aspx#IPFilter):
+
+1. Open the */etc/maticonoffice/documentserver/local.json* file using any available text editor:
+
+   ``` json
+   {
+     "ipfilter": {
+       "rules": [
+         {
+           "address": "ip_address",
+           "allowed": true
+         },
+         {
+           "address": "*",
+           "allowed": false
+         }
+       ],
+       "useforrequest": false,
+       "errorcode": 403
+     }
+   }
+  
+   ```
+
+2. Change the following default settings. Enter your *"ip\_address"* that can contain:
+
+   - IP in the X.X.X.X format for ipv4,
+   - IP in the xxxx.xxxx.xxxx.xxxx.xxxx.xxxx.xxxx.xxxx format for ipv6,
+   - dns-name,
+   - \* wildcard to replace any symbol/symbols.
+
+3. Change the *"allowed"* rule that can be **true** or **false**.
+
+4. Restart the services for the config changes to take effect:
+
+    <Tabs>
+      <TabItem value="rpm-deb" label="RPM/DEB packages">
+          ``` bash
+          systemctl restart ds-*
+          ```
+      </TabItem>
+      <TabItem value="docker" label="Docker">
+          ``` bash
+          supervisorctl restart all
+          ```
+      </TabItem>
+    </Tabs>

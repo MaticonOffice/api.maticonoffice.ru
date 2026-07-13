@@ -1,0 +1,44 @@
+# SetCellBorderBottom
+
+Sets the border which shall be displayed at the bottom of the current table cell.
+
+## Syntax
+
+```javascript
+expression.SetCellBorderBottom(fSize, oApiFill);
+```
+
+`expression` - A variable that represents a [ApiTableCell](../ApiTableCell.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| fSize | Required | [mm](../../Enumeration/mm.md) |  | The width of the current border. |
+| oApiFill | Required | [ApiFill](../../ApiFill/ApiFill.md) |  | The color or pattern used to fill the current border. |
+
+## Returns
+
+This method doesn't return any data.
+
+## Example
+
+Apply a border with fill color to the bottom of a table cell.
+
+```javascript editor-pptx
+// Set the bottom border style and fill for the cell.
+
+// Create a table cell and apply a bottom border with color.
+
+const presentation = Api.GetPresentation();
+const slide = presentation.GetSlideByIndex(0);
+
+const table = Api.CreateTable(2, 4);
+const row = table.GetRow(0);
+const cell = row.GetCell(0);
+const fill = Api.CreateSolidFill(Api.RGB(51, 51, 51));
+cell.SetCellBorderBottom(2, fill);
+
+slide.RemoveAllObjects();
+slide.AddObject(table);
+```

@@ -1,0 +1,115 @@
+﻿---
+description: Integrate Maticon Office Docs into Confluence for document editing and collaboration.
+tags: ["Docs", "Integration", "Ready-to-use"]
+sidebar_custom_props:
+  icon: /assets/images/editor/connectors/confluence.svg
+---
+
+# Confluence integration
+
+```mdx-code-block
+import YoutubeVideo from '@site/src/components/YoutubeVideo/YoutubeVideo';
+
+<YoutubeVideo videoId="pGd06HLkWU4"/>
+```
+
+This [app](https://github.com/MaticonOffice/maticonoffice-confluence) enables users to edit office documents from [Confluence](https://www.atlassian.com/software/confluence/) using Maticon Office Docs.
+
+The connector is available in the official [Atlassian Marketplace](https://marketplace.atlassian.com/1218214).
+
+## Features
+
+- Currently, the following document formats can be edited: DOCM, DOCX, DOTM, DOTX, XLSB, XLSM, XLSX, XLTM, XLTX, POTM, POTX, PPSM, PPSX, PPTM, PPTX, PDF.
+- The following formats are available for viewing only: DOC, DOT, EPUB, FB2, FODT, HTM, HTML, HWP, HWPX, MD, MHT, MHTML, ODT, OTT, PAGES, RTF, STW, SXW, TXT, WPS, WPT, XML, CSV, ET, ETT, FODS, NUMBERS, ODS, OTS, SXC, XLS, XLT, DPS, DPT, FODP, KEY, ODG, ODP, OTP, POT, PPS, PPT, SXI, DJVU, OXPS, XPS, VSDM, VSDX, VSSM, VSSX, VSTM, VSTX.
+- The app will create a new **Edit in Maticon Office** menu option within the document library for Office documents. This allows multiple users to collaborate in real time and to save back those changes to Confluence.
+- The following document formats can be converted into OOXML: DOC, DOCM, DOCX, DOT, DOTM, DOTX, EPUB, FB2, FODT, HTM, HTML, HWP, HWPX, MD, MHT, MHTML, ODT, OTT, PAGES, RTF, STW, SXW, TXT, WPS, WPT, XML, CSV, ET, ETT, FODS, NUMBERS, ODS, OTS, SXC, XLS, XLSB, XLSM, XLSX, XLT, XLTM, XLTX, DPS, DPT, FODP, KEY, ODG, ODP, OTP, POT, POTM, POTX, PPS, PPSM, PPSX, PPT, PPTM, PPTX, SXI, OXPS, PDF, XPS.
+
+## Installing Maticon Office Docs
+
+You will need an instance of Maticon Office Docs (Document Server) that is resolvable and connectable both from Confluence and any end clients. If that is not the case, use the official [Maticon Office Docs documentation page](https://help.maticonoffice.ru/server/linux/document/linux-installation.aspx). Maticon Office Docs must also be able to POST to Confluence directly.
+
+The easiest way to start an instance of Maticon Office Docs is to use [Docker](https://github.com/MaticonOffice/Docker-DocumentServer).
+
+## Installing Maticon Office app for Confluence
+
+Upload the compiled *target/maticonoffice-confluence-plugin.jar* to Confluence on the **Manage add-ons** page.
+
+The latest compiled package files are available [here](https://github.com/MaticonOffice/maticonoffice-confluence/releases) and on [Atlassian Marketplace](https://marketplace.atlassian.com/apps/1218214/maticonoffice-connector-for-confluence?tab=overview&hosting=datacenter).
+
+You can also install the app from Confluence administration panel:
+
+1. Log in to your Confluence instance as an administrator.
+2. Navigate to the **Manage add-ons** page.
+3. Click **Find new apps** or **Find new add-ons** on the left panel.
+4. Locate **Maticon Office Connector for Confluence** using search. Results will include the add-on versions compatible with your Confluence instance.
+5. Click **Install** to download and install the app.
+6. Now you can click **Close** in the **Installed and ready to go** dialog.
+
+## Configuring Maticon Office app for Confluence
+
+Find the uploaded **Maticon Office Connector for Confluence** on the **Manage add-ons** page. Click **Configure** and enter the name of the server with Maticon Office Docs installed:
+
+```sh
+https://<documentserver>/
+```
+
+where the **documentserver** is the name of the server with the **Maticon Office Docs** installed. The address must be accessible from both the user's browser and the Confluence server. The Confluence server address must also be accessible from **Maticon Office Docs** for correct work. You can [register](https://www.maticonoffice.ru/docs-registration.aspx?from=api) a free Maticon Office Cloud and use its public IP address or public DNS that can be found in the **Instances** section of the cloud console.
+
+Starting from version 7.2, JWT is enabled by default and the secret key is generated automatically to restrict access to Maticon Office Docs and for security reasons and data integrity. Specify your own **Secret key** on the Confluence administration page. In the Maticon Office Docs [config file](../../additional-api/signature/signature.md), specify the same secret key and enable the validation.
+
+## Compiling Maticon Office app for Confluence
+
+If you plan to compile the Maticon Office app for Confluence yourself (e.g. edit the source code and compile it afterwards), follow these steps:
+
+1. The stable Java version is necessary for the successful build. If you do not have it installed, use the following commands to install **Open JDK 8**:
+
+   ``` sh
+   sudo apt-get update
+   sudo apt-get install openjdk-8-jdk
+   ```
+
+2. Install **Atlassian Plugin SDK**. Installation process is described [here](https://developer.atlassian.com/docs/getting-started/set-up-the-atlassian-plugin-sdk-and-build-a-project).
+
+3. Get a submodule:
+
+   ``` sh
+   git submodule update --init --recursive
+   ```
+
+4. Compile package:
+
+   ``` sh
+   atlas-package
+   ```
+
+## How it works
+
+The Maticon Office integration follows the API documented [here](../basic-concepts.md).
+
+1. The user navigates to the Confluence attachments and selects the **Edit in Maticon Office** action.
+
+2. Confluence makes a request to *MaticonOfficeEditorServlet* (URL of the form: */plugins/servlet/maticonoffice/doceditor?attachmentId=$attachment.id*).
+
+3. Confluence sends a document to Maticon Office Document storage service and receives a temporary link.
+
+4. Confluence prepares a JSON object with the following properties:
+
+   - **url** - the temporary link that Maticon Office Docs uses to download the document;
+   - **callbackUrl** - the URL that Maticon Office Docs informs about status of the document editing;
+   - **docserviceApiUrl** - the URL that the client needs to respond to Maticon Office Docs (provided by the *files.docservice.url.api* property);
+   - **key** - the UUID to instruct Maticon Office Docs whether to download the document again or not;
+   - **title** - the document title (name).
+
+5. Confluence takes this object and constructs a page from a freemarker template, filling in all of those values so that the client browser can load up the editor.
+
+6. The client browser makes a request to the JavaScript library from Maticon Office Docs and sends Maticon Office Docs the DocEditor configuration with the above properties.
+
+7. Then Maticon Office Docs downloads the document from Confluence and the user begins editing.
+
+8. When all users and client browsers are done with editing, they close the editing window.
+
+9. After [10 seconds](../how-it-works/saving-file.md#save-delay) of inactivity, Maticon Office Docs sends a POST to *callbackUrl* letting Confluence know that the clients have finished editing the document and closed it.
+
+10. Confluence downloads a new version of the document, replacing the old one.
+
+Download the Maticon Office app for Confluence [here](https://github.com/MaticonOffice/maticonoffice-confluence).

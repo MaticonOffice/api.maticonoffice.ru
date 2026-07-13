@@ -1,0 +1,37 @@
+# CHISQ_INV
+
+Returns the inverse of the left-tailed probability of the chi-squared distribution.
+
+## Syntax
+
+```javascript
+expression.CHISQ_INV(arg1, arg2-);
+```
+
+`expression` - A variable that represents a [ApiWorksheetFunction](../ApiWorksheetFunction.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| arg1 | Required | [ApiRange](../../ApiRange/ApiRange.md) \| [ApiName](../../ApiName/ApiName.md) \| number |  | A probability associated with the chi-squared distribution, a value between 0 and 1 inclusive. |
+| arg2- | Required | [ApiRange](../../ApiRange/ApiRange.md) \| [ApiName](../../ApiName/ApiName.md) \| number |  | The number of degrees of freedom, a number between 1 and 10^10, excluding 10^10. |
+
+## Returns
+
+number
+
+## Example
+
+Convert a left-tail probability into the matching chi-squared critical value in a spreadsheet.
+
+```javascript editor-xlsx
+// Identify the boundary point where cumulative results reach a specified probability level in a spreadsheet.
+
+// Establish the threshold value for statistical tests based on a given tail probability in a spreadsheet.
+
+let worksheet = Api.GetActiveSheet();
+let func = Api.WorksheetFunction;
+let ans = func.CHISQ_INV(0.4, 10);
+worksheet.GetRange("B2").SetValue(ans);
+```

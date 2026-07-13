@@ -1,0 +1,52 @@
+﻿# AddCustomFunction
+
+Creates a new custom function.
+The description of the function parameters and result is specified using JSDoc. The *@customfunction* tag is required in JSDoc.
+Parameters and results can be specified as the *number / string / boolean / any / number[][] / string[][] / boolean[][] / any[][]* types.
+Parameters can be required or optional. A user can also set a default value.
+The passed function can be asynchronous (async function or function returning a Promise).
+Inside the passed function, you can access the current cell address where the calculation is performed using *this.address*.
+You can also access the addresses of function arguments using *this.args[0].address*, *this.args[1].address*, etc.
+This method is not used in Maticon Office Document Builder. Use AddCustomFunctionLibrary instead.
+
+## Syntax
+
+```javascript
+expression.AddCustomFunction(fCustom);
+```
+
+`expression` - A variable that represents a [Api](../Api.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| fCustom | Required | function |  | A new function for calculating. Can be synchronous or asynchronous. |
+
+## Returns
+
+This method doesn't return any data.
+
+## Example
+
+Register a custom function and call it from a cell formula in a spreadsheet.
+
+```javascript editor-xlsx
+// How do I define my own calculation function for use in cells in a spreadsheet?
+
+// Extend built-in formulas with a user-written function that sums two numbers in a spreadsheet.
+
+/**
+ * Function that returns the argument
+ * @customfunction
+ * @param {number} first First argument.
+ * @param {number} second Second argument.
+ * @returns {number} The sum of the numbers.
+ */
+Api.AddCustomFunction(function ADD(first, second) {
+    return first + second;
+});
+
+let worksheet = Api.GetActiveSheet();
+worksheet.GetRange('A1').SetValue('=ADD(1,2)');
+```

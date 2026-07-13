@@ -1,0 +1,41 @@
+# GetFill
+
+Returns the fill type of the current path.
+
+## Syntax
+
+```javascript
+expression.GetFill();
+```
+
+`expression` - A variable that represents a [ApiPath](../ApiPath.md) class.
+
+## Parameters
+
+This method doesn't have any parameters.
+
+## Returns
+
+[PathFillType](../../Enumeration/PathFillType.md)
+
+## Example
+
+Read the fill setting of a custom shape path and display shape properties in a spreadsheet.
+
+```javascript editor-xlsx
+// How do I check whether a path inside a custom shape is filled in a spreadsheet?
+
+// Inspect path dimensions, stroke, and fill values to understand how a shape is drawn in a spreadsheet.
+
+let worksheet = Api.GetActiveSheet();
+let fill = Api.CreateSolidFill(Api.RGB(100, 150, 200));
+let stroke = Api.CreateStroke(18000, Api.CreateSolidFill(Api.RGB(50, 75, 100)));
+let shape = worksheet.AddShape("cloud", 60 * 36000, 60 * 36000, fill, stroke, 3, 0, 2, 2);
+let geometry = shape.GetGeometry();
+worksheet.GetRange("A3").SetValue("Path count: " + geometry.GetPathCount());
+let path = geometry.GetPath(0);
+worksheet.GetRange("A4").SetValue("Width: " + path.GetWidth() + ", Height: " + path.GetHeight());
+worksheet.GetRange("A5").SetValue("Stroke: " + path.GetStroke() + ", Fill: " + path.GetFill());
+let paths = geometry.GetPaths();
+worksheet.GetRange("A6").SetValue("Total paths: " + paths.length);
+```

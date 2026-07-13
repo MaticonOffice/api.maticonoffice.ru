@@ -1,0 +1,44 @@
+# GetPathCount
+
+Returns the number of paths in the current geometry.
+
+## Syntax
+
+```javascript
+expression.GetPathCount();
+```
+
+`expression` - A variable that represents a [ApiGeometry](../ApiGeometry.md) class.
+
+## Parameters
+
+This method doesn't have any parameters.
+
+## Returns
+
+number
+
+## Example
+
+Count the drawing paths in a shape's geometry in a presentation.
+
+```javascript editor-pptx
+// How do I find how many paths a shape has in a presentation?
+
+// Determine the number of paths that make up a shape's outline in a presentation.
+
+let presentation = Api.GetPresentation();
+let slide = presentation.GetSlideByIndex(0);
+let fill = Api.CreateSolidFill(Api.RGB(100, 150, 200));
+let stroke = Api.CreateStroke(36000, Api.CreateSolidFill(Api.RGB(50, 75, 100)));
+let shape = Api.CreateShape("cloud", 100 * 36000, 100 * 36000, fill, stroke);
+let geometry = shape.GetGeometry();
+let path = geometry.GetPath(0);
+let paths = geometry.GetPaths();
+let paragraph = shape.GetDocContent().GetElement(0);
+paragraph.AddText("Paths: " + geometry.GetPathCount() + ", Width: " + path.GetWidth());
+paragraph.AddText(", Height: " + path.GetHeight() + ", Stroke: " + path.GetStroke());
+paragraph.AddText(", Fill: " + path.GetFill() + ", Array: " + paths.length);
+shape.SetPosition(1000000, 1000000);
+slide.AddObject(shape);
+```

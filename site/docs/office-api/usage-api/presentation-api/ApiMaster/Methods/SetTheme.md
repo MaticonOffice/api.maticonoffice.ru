@@ -1,0 +1,80 @@
+# SetTheme
+
+Sets a theme to the slide master.
+Sets a copy of the theme object.
+
+## Syntax
+
+```javascript
+expression.SetTheme(oTheme);
+```
+
+`expression` - A variable that represents a [ApiMaster](../ApiMaster.md) class.
+
+## Parameters
+
+| **Name** | **Required/Optional** | **Data type** | **Default** | **Description** |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| oTheme | Required | [ApiTheme](../../ApiTheme/ApiTheme.md) |  | Presentation theme. |
+
+## Returns
+
+boolean
+
+## Example
+
+Create a custom theme and apply it to a slide master.
+
+```javascript editor-pptx
+// Define color, format, and font schemes, then create a complete theme object.
+
+// Set the theme on the master and display the result using a styled chart.
+
+const presentation = Api.GetPresentation();
+const slide = presentation.GetSlideByIndex(0);
+const master = presentation.GetMaster(0);
+
+const colorScheme = Api.CreateThemeColorScheme([
+	Api.CreateRGBColor(255, 111, 61), Api.CreateRGBColor(51, 51, 51), Api.CreateRGBColor(230, 179, 117),
+	Api.CreateRGBColor(235, 235, 235), Api.CreateRGBColor(163, 21, 21), Api.CreateRGBColor(128, 43, 43),
+	Api.CreateRGBColor(0, 0, 0), Api.CreateRGBColor(128, 128, 128), Api.CreateRGBColor(176, 196, 222),
+	Api.CreateRGBColor(65, 105, 225), Api.CreateRGBColor(255, 255, 255), Api.CreateRGBColor(255, 213, 191)
+], "New color scheme");
+
+const gs1 = Api.CreateGradientStop(Api.RGB(255, 213, 191), 0);
+const gs2 = Api.CreateGradientStop(Api.RGB(255, 111, 61), 100000);
+const fill1 = Api.CreateRadialGradientFill([gs1, gs2]);
+const fill2 = Api.CreatePatternFill("dashDnDiag", Api.RGB(255, 111, 61), Api.RGB(51, 51, 51));
+const fill3 = Api.CreateSolidFill(Api.RGB(255, 111, 61));
+const bgFill1 = Api.CreateRadialGradientFill([gs1, gs2]);
+const bgFill2 = Api.CreatePatternFill("dashDnDiag", Api.RGB(255, 111, 61), Api.RGB(51, 51, 51));
+const bgFill3 = Api.CreateSolidFill(Api.RGB(255, 111, 61));
+const stroke1 = Api.CreateStroke(0, fill2);
+const stroke2 = Api.CreateStroke(0, Api.CreateRGBColor(51, 51, 51));
+const stroke3 = Api.CreateStroke(0, fill1);
+
+const formatScheme = Api.CreateThemeFormatScheme([fill1, fill2, fill3], [bgFill1, bgFill2, bgFill3], [stroke1, stroke2, stroke3], "New format scheme");
+const fontScheme = Api.CreateThemeFontScheme("Arial", "Noto Sans Simplified Chinese", "Arabic", "Times New Roman", "Noto Serif Simplified Chinese", "Arabic", "New font scheme");
+const theme = Api.CreateTheme("New theme", master, colorScheme, formatScheme, fontScheme);
+master.SetTheme(theme);
+
+const chart = Api.CreateChart("bar3D", [
+	[200, 240, 280],
+	[250, 260, 280]
+], ["Projected Revenue", "Estimated Costs"], [2014, 2015, 2016], 4051300, 2347595, 24);
+chart.SetVerAxisTitle("USD In Hundred Thousands", 10);
+chart.SetHorAxisTitle("Year", 11);
+chart.SetLegendPos("bottom");
+chart.SetShowDataLabels(false, false, true, false);
+chart.SetTitle("Financial Overview", 20);
+chart.SetSize(300 * 36000, 130 * 36000);
+chart.SetPosition(608400, 1267200);
+
+let fill = Api.CreateSolidFill(Api.RGB(51, 51, 51));
+chart.SetSeriesFill(fill, 0, false);
+fill = Api.CreateSolidFill(Api.RGB(255, 111, 61));
+chart.SetSeriesFill(fill, 1, false);
+
+slide.RemoveAllObjects();
+slide.AddObject(chart);
+```

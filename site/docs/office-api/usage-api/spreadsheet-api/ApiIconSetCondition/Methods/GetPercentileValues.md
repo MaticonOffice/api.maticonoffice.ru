@@ -1,0 +1,46 @@
+# GetPercentileValues
+
+Returns whether the thresholds for the icon set conditional format are determined by using percentiles.
+
+## Syntax
+
+```javascript
+expression.GetPercentileValues();
+```
+
+`expression` - A variable that represents a [ApiIconSetCondition](../ApiIconSetCondition.md) class.
+
+## Parameters
+
+This method doesn't have any parameters.
+
+## Returns
+
+boolean
+
+## Example
+
+Find out whether an icon set rule uses percentile-based thresholds in a spreadsheet.
+
+```javascript editor-xlsx
+// How do I check if an icon set rule measures thresholds as percentiles in a spreadsheet?
+
+// Verify that the icon set rule distributes icons according to percentile values in a spreadsheet.
+
+let worksheet = Api.GetActiveSheet();
+
+worksheet.GetRange("A1").SetValue("Data");
+worksheet.GetRange("A2").SetValue(100);
+worksheet.GetRange("A3").SetValue(75);
+worksheet.GetRange("A4").SetValue(50);
+worksheet.GetRange("A5").SetValue(25);
+
+let range = worksheet.GetRange("A2:A5");
+let formatConditions = range.GetFormatConditions();
+let iconCondition = formatConditions.AddIconSetCondition();
+
+iconCondition.SetPercentileValues(true);
+
+let usesPercentiles = iconCondition.GetPercentileValues();
+worksheet.GetRange("B1").SetValue("Uses percentiles: " + usesPercentiles);
+```

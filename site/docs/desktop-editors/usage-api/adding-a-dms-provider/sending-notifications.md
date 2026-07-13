@@ -1,0 +1,54 @@
+---
+sidebar_position: -7
+---
+
+# Sending notifications
+
+The desktop app can send text messages to be displayed to the user. To do so, declare the function:
+
+```ts
+window.onSystemMessage = function onSystemMessage(e) {};
+```
+
+The `e` object has the following structure:
+
+```json
+{
+  "type": "operation",
+  "opMessage": "Loading...",
+  "opType": 1
+}
+```
+
+```mdx-code-block
+import APITable from '@site/src/components/APITable/APITable';
+
+<APITable>
+```
+
+| Parameter   | Type    | Description                                                                                                                                                                             |
+|-------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| e           | object  | The message parameters.                                                                                                                                                         |
+| e.type      | string  | Checks if the message type is *operation*. If not, then no messages are displayed to the user.                                                                                          |
+| e.opMessage | string  | The message that will be displayed to the user.                                                                                                                                 |
+| e.opType    | integer | The message by the operation type if the `opMessage` parameter is undefined. Set it to **0** to inform the user about file upload, or to **1** to inform about file encryption. |
+
+```mdx-code-block
+</APITable>
+```
+
+## Example
+
+```ts
+window.onSystemMessage({type: "operation", opType: 1});
+```
+
+## Updating file status
+
+The desktop app can send notifications about file editing completion.
+
+Declare the following global function:
+
+```ts
+window.DesktopUpdateFile = function DesktopUpdateFile() {};
+```
